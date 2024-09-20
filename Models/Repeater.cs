@@ -111,4 +111,22 @@ public partial class Repeater
     public bool? LicenseExpired { get; set; }
 
     public string? LegacyMetadata { get; set; }
+
+    public virtual AutopatchOption? AutopatchNavigation { get; set; }
+
+    public virtual ICollection<Link> LinkLinkFromRepeaters { get; set; } = new List<Link>();
+
+    public virtual ICollection<Link> LinkLinkToRepeaters { get; set; } = new List<Link>();
+
+    public virtual ICollection<Permission> Permissions { get; set; } = new List<Permission>();
+
+    public virtual ICollection<RepeaterChangeLog> RepeaterChangeLogs { get; set; } = new List<RepeaterChangeLog>();
+
+    public virtual ICollection<Request> Requests { get; set; } = new List<Request>();
+
+    public virtual RepeaterStatus StatusNavigation { get; set; } = null!;
+
+    public virtual User? Trustee { get; set; }
+
+    public virtual RepeaterType TypeNavigation { get; set; } = null!;
 }

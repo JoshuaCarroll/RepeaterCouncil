@@ -21,4 +21,8 @@ public partial class ProposedCoordinationsLog
     public string? Comment { get; set; }
 
     public DateTime? DateTime { get; set; }
+
+    public virtual ProposedCoordinationAnswer AnswerNavigation { get; set; } = null!;
+
+    public virtual User RequestedByUser { get; set; } = null!;
 }

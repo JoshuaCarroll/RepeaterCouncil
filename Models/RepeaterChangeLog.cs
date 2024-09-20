@@ -14,4 +14,8 @@ public partial class RepeaterChangeLog
     public DateTime ChangeDateTime { get; set; }
 
     public string ChangeDescription { get; set; } = null!;
+
+    public virtual Repeater Repeater { get; set; } = null!;
+
+    public virtual User User { get; set; } = null!;
 }

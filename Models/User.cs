@@ -36,4 +36,16 @@ public partial class User
     public bool? SK { get; set; }
 
     public bool? LicenseExpired { get; set; }
+
+    public virtual ICollection<Permission> Permissions { get; set; } = new List<Permission>();
+
+    public virtual ICollection<ProposedCoordinationsLog> ProposedCoordinationsLogs { get; set; } = new List<ProposedCoordinationsLog>();
+
+    public virtual ICollection<RepeaterChangeLog> RepeaterChangeLogs { get; set; } = new List<RepeaterChangeLog>();
+
+    public virtual ICollection<Repeater> Repeaters { get; set; } = new List<Repeater>();
+
+    public virtual ICollection<RequestNote> RequestNotes { get; set; } = new List<RequestNote>();
+
+    public virtual ICollection<Request> Requests { get; set; } = new List<Request>();
 }

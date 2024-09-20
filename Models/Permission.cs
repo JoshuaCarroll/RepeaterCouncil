@@ -10,4 +10,8 @@ public partial class Permission
     public int? UserId { get; set; }
 
     public int? RepeaterId { get; set; }
+
+    public virtual Repeater? Repeater { get; set; }
+
+    public virtual User? User { get; set; }
 }

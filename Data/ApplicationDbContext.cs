@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using RepeaterCouncil.Models;
 
 namespace RepeaterCouncil.Data;
 
-public partial class ApplicationDbContext : DbContext
+public partial class ApplicationDbContext : IdentityDbContext<IdentityUser>
 {
     public ApplicationDbContext()
     {
     }
 
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-        : base(options)
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
     }
 
@@ -58,12 +59,8 @@ public partial class ApplicationDbContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
-    public virtual DbSet<tempExpiredLicense> tempExpiredLicenses { get; set; }
-
-    public virtual DbSet<tempSilentKey> tempSilentKeys { get; set; }
-
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Name=ConnectionStrings:RepeaterData", x => x.UseNetTopologySuite());
+        => optionsBuilder.UseSqlServer("Name=ConnectionStrings:RepeaterData3", x => x.UseNetTopologySuite());
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -154,19 +151,38 @@ public partial class ApplicationDbContext : DbContext
         {
             entity.Property(e => e.Comment).HasDefaultValueSql("(NULL)");
             entity.Property(e => e.LinkTypeID).HasDefaultValueSql("(NULL)");
+
+            entity.HasOne(d => d.LinkFromRepeater).WithMany(p => p.LinkLinkFromRepeaters)
+                .HasForeignKey(d => d.LinkFromRepeaterID)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Links_LinkFromRepeaterID");
+
+            entity.HasOne(d => d.LinkToRepeater).WithMany(p => p.LinkLinkToRepeaters)
+                .HasForeignKey(d => d.LinkToRepeaterID)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Links_LinkToRepeaterID");
+
+            entity.HasOne(d => d.LinkType).WithMany(p => p.Links)
+                .HasForeignKey(d => d.LinkTypeID)
+                .HasConstraintName("FK_Links_LinkTypeID");
         });
 
         modelBuilder.Entity<LinkType>(entity =>
         {
-            entity.HasNoKey();
-
-            entity.Property(e => e.ID).ValueGeneratedOnAdd();
             entity.Property(e => e.LinkType1).HasColumnName("LinkType");
         });
 
         modelBuilder.Entity<Permission>(entity =>
         {
             entity.HasKey(e => e.ID).HasName("PK__Permissi__3214EC273694552F");
+
+            entity.HasOne(d => d.Repeater).WithMany(p => p.Permissions)
+                .HasForeignKey(d => d.RepeaterId)
+                .HasConstraintName("FK_Permissions_RepeaterId");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Permissions)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK_Permissions_UserId");
         });
 
         modelBuilder.Entity<ProposedCoordinationAnswer>(entity =>
@@ -192,6 +208,16 @@ public partial class ApplicationDbContext : DbContext
                 .HasColumnType("datetime");
             entity.Property(e => e.ReceiveFrequency).HasColumnType("decimal(12, 6)");
             entity.Property(e => e.TransmitFrequency).HasColumnType("decimal(12, 6)");
+
+            entity.HasOne(d => d.AnswerNavigation).WithMany(p => p.ProposedCoordinationsLogs)
+                .HasForeignKey(d => d.Answer)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ProposedCoordinationsLog_Answer");
+
+            entity.HasOne(d => d.RequestedByUser).WithMany(p => p.ProposedCoordinationsLogs)
+                .HasForeignKey(d => d.RequestedByUserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_ProposedCoordinationsLog_RequestedByUserId");
         });
 
         modelBuilder.Entity<Repeater>(entity =>
@@ -266,12 +292,40 @@ public partial class ApplicationDbContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e._Latitude).HasColumnType("decimal(10, 7)");
             entity.Property(e => e._Longitude).HasColumnType("decimal(10, 7)");
+
+            entity.HasOne(d => d.AutopatchNavigation).WithMany(p => p.Repeaters)
+                .HasForeignKey(d => d.Autopatch)
+                .HasConstraintName("FK_Repeaters_Autopatch");
+
+            entity.HasOne(d => d.StatusNavigation).WithMany(p => p.Repeaters)
+                .HasForeignKey(d => d.Status)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Repeaters_Status");
+
+            entity.HasOne(d => d.Trustee).WithMany(p => p.Repeaters)
+                .HasForeignKey(d => d.TrusteeID)
+                .HasConstraintName("FK_Repeaters_TrusteeID");
+
+            entity.HasOne(d => d.TypeNavigation).WithMany(p => p.Repeaters)
+                .HasForeignKey(d => d.Type)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Repeaters_Type");
         });
 
         modelBuilder.Entity<RepeaterChangeLog>(entity =>
         {
             entity.Property(e => e.ChangeDateTime).HasColumnType("datetime");
             entity.Property(e => e.ChangeDescription).IsUnicode(false);
+
+            entity.HasOne(d => d.Repeater).WithMany(p => p.RepeaterChangeLogs)
+                .HasForeignKey(d => d.RepeaterId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_RepeaterChangeLogs_RepeaterId");
+
+            entity.HasOne(d => d.User).WithMany(p => p.RepeaterChangeLogs)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_RepeaterChangeLogs_UserId");
         });
 
         modelBuilder.Entity<RepeaterStatus>(entity =>
@@ -303,12 +357,30 @@ public partial class ApplicationDbContext : DbContext
                 .HasMaxLength(10)
                 .IsUnicode(false)
                 .HasDefaultValueSql("(NULL)");
+
+            entity.HasOne(d => d.Repeater).WithMany(p => p.Requests)
+                .HasForeignKey(d => d.RepeaterID)
+                .HasConstraintName("FK_Requests_RepeaterID");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Requests)
+                .HasForeignKey(d => d.UserID)
+                .HasConstraintName("FK_Requests_UserID");
         });
 
         modelBuilder.Entity<RequestNote>(entity =>
         {
             entity.Property(e => e.Note).IsUnicode(false);
             entity.Property(e => e.Timestamp).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Request).WithMany(p => p.RequestNotes)
+                .HasForeignKey(d => d.RequestID)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_RequestNotes_RequestID");
+
+            entity.HasOne(d => d.User).WithMany(p => p.RequestNotes)
+                .HasForeignKey(d => d.UserID)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_RequestNotes_UserID");
         });
 
         modelBuilder.Entity<RequestStatus>(entity =>
@@ -328,13 +400,22 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.State)
                 .HasMaxLength(30)
                 .IsUnicode(false);
-            entity.Property(e => e.StatusID).HasDefaultValue((byte)1);
+            entity.Property(e => e.StatusID).HasDefaultValue(1);
             entity.Property(e => e.TimeStamp).HasColumnType("datetime");
             entity.Property(e => e.UrlKey)
                 .HasMaxLength(128)
                 .IsUnicode(false)
                 .HasDefaultValueSql("(NULL)")
                 .IsFixedLength();
+
+            entity.HasOne(d => d.Request).WithMany(p => p.RequestWorkflows)
+                .HasForeignKey(d => d.RequestID)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_RequestWorkflows_RequestID");
+
+            entity.HasOne(d => d.Status).WithMany(p => p.RequestWorkflows)
+                .HasForeignKey(d => d.StatusID)
+                .HasConstraintName("FK_RequestWorkflows_StatusID");
         });
 
         modelBuilder.Entity<State>(entity =>
@@ -399,20 +480,6 @@ public partial class ApplicationDbContext : DbContext
             entity.Property(e => e.ZIP)
                 .HasMaxLength(10)
                 .IsUnicode(false);
-        });
-
-        modelBuilder.Entity<tempExpiredLicense>(entity =>
-        {
-            entity.HasNoKey();
-
-            entity.Property(e => e.value).HasMaxLength(1000);
-        });
-
-        modelBuilder.Entity<tempSilentKey>(entity =>
-        {
-            entity.HasNoKey();
-
-            entity.Property(e => e.value).HasMaxLength(1000);
         });
 
         OnModelCreatingPartial(modelBuilder);

@@ -11,8 +11,6 @@ public partial class RequestWorkflow
 
     public string State { get; set; } = null!;
 
-    public byte? StatusID { get; set; }
-
     public string? Note { get; set; }
 
     public DateTime? TimeStamp { get; set; }
@@ -22,4 +20,10 @@ public partial class RequestWorkflow
     public DateTime? RequestedTimeStamp { get; set; }
 
     public DateTime? LastReminderSent { get; set; }
+
+    public int? StatusID { get; set; }
+
+    public virtual Request Request { get; set; } = null!;
+
+    public virtual RequestStatus? Status { get; set; }
 }

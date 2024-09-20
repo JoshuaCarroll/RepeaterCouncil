@@ -20,8 +20,6 @@ public partial class Request
 
     public decimal? OutputFrequency { get; set; }
 
-    public byte? StatusID { get; set; }
-
     public string? State { get; set; }
 
     public DateTime? RequestedOn { get; set; }
@@ -29,4 +27,14 @@ public partial class Request
     public int? RepeaterID { get; set; }
 
     public DateTime? ClosedOn { get; set; }
+
+    public int? StatusID { get; set; }
+
+    public virtual Repeater? Repeater { get; set; }
+
+    public virtual ICollection<RequestNote> RequestNotes { get; set; } = new List<RequestNote>();
+
+    public virtual ICollection<RequestWorkflow> RequestWorkflows { get; set; } = new List<RequestWorkflow>();
+
+    public virtual User? User { get; set; }
 }

@@ -14,4 +14,10 @@ public partial class Link
     public int? LinkTypeID { get; set; }
 
     public string? Comment { get; set; }
+
+    public virtual Repeater LinkFromRepeater { get; set; } = null!;
+
+    public virtual Repeater LinkToRepeater { get; set; } = null!;
+
+    public virtual LinkType? LinkType { get; set; }
 }
