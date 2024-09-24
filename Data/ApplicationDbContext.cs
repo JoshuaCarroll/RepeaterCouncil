@@ -64,6 +64,8 @@ public partial class ApplicationDbContext : IdentityDbContext<IdentityUser>
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
+
         modelBuilder.Entity<AutopatchOption>(entity =>
         {
             entity.Property(e => e.Description)

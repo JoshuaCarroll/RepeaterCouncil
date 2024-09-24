@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using RepeaterCouncil.Models;
+using RepeaterCouncil.ViewModels;
 
 namespace RepeaterCouncil.Controllers;
 
@@ -27,5 +28,10 @@ public class HomeController : Controller
     public IActionResult Error()
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+    }
+
+    public IActionResult TestLogin()
+    {
+        return Redirect("/Identity/Account/Login");
     }
 }

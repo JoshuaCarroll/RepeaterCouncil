@@ -1,4 +1,4 @@
-namespace RepeaterCouncil.Models;
+namespace RepeaterCouncil.ViewModels;
 
 public class ErrorViewModel
 {
