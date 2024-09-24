@@ -43,6 +43,25 @@ namespace RepeaterCouncil.Data
                 }
             }
         }
+
+        public static async Task CreateRoles(IServiceProvider serviceProvider)
+        {
+            // Resolve RoleManager
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+            // Define the roles to be created
+            string[] roleNames = { "Administrator", "Coordinator", "User" };
+
+            // Iterate through the roles and create them if they do not exist
+            foreach (var roleName in roleNames)
+            {
+                var roleExist = await roleManager.RoleExistsAsync(roleName);
+                if (!roleExist)
+                {
+                    await roleManager.CreateAsync(new IdentityRole(roleName));
+                }
+            }
+        }
     }
 
 }

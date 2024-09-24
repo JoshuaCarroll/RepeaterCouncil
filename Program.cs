@@ -30,13 +30,25 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
+
+// Apply migrations and seed roles during startup
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    // Apply migrations if there are any pending migrations
+    var dbContext = services.GetRequiredService<ApplicationDbContext>();
+    await dbContext.Database.MigrateAsync();
+
+    // Call the CreateRoles method to seed roles
+    await DbInitializer.CreateRoles(services);
+}
 
 // Map areas (needed for Identity UI)
 app.MapControllerRoute(
