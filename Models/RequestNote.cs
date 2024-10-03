@@ -11,6 +11,8 @@ public partial class RequestNote
 
     public int UserID { get; set; }
 
+    public string IdentityUserId { get; set; }
+
     public DateTime Timestamp { get; set; }
 
     public string? Note { get; set; }

@@ -8,7 +8,9 @@ public partial class ProposedCoordinationsLog
 {
     public int ID { get; set; }
 
-    public int RequestedByUserId { get; set; }
+    public int RequestedByUserID { get; set; }
+
+    public string IdentityUserId { get; set; }
 
     public Geometry? Location { get; set; }
 

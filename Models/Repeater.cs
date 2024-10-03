@@ -12,7 +12,9 @@ public partial class Repeater
 
     public string Callsign { get; set; } = null!;
 
-    public int? TrusteeID { get; set; }
+    public int TrusteeID { get; set; }
+
+    public string IdentityUserId { get; set; }
 
     public int? _TrusteeOldID { get; set; }
 

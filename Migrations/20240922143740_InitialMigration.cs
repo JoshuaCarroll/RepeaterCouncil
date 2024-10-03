@@ -12,6 +12,83 @@ namespace RepeaterCouncil.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.Sql(@"
+                ALTER TABLE [dbo].[Requests] DROP CONSTRAINT [FK_Requests_UserID];
+                ALTER TABLE [dbo].[RequestNotes] DROP CONSTRAINT [FK_RequestNotes_UserID];
+                ALTER TABLE [dbo].[Repeaters] DROP CONSTRAINT [FK_Repeaters_TrusteeID];
+                ALTER TABLE [dbo].[RepeaterChangeLogs] DROP CONSTRAINT [FK_RepeaterChangeLogs_UserId];
+                ALTER TABLE [dbo].[ProposedCoordinationsLog] DROP CONSTRAINT [FK_ProposedCoordinationsLog_RequestedByUserId];
+                ALTER TABLE [dbo].[Permissions] DROP CONSTRAINT [FK_Permissions_UserId];
+                ALTER TABLE [dbo].[Users] DROP CONSTRAINT [PK__Users__3214EC27AB5231B4] WITH ( ONLINE = OFF );
+
+                ALTER TABLE Users ADD IdentityUserId NVARCHAR(450) NOT NULL DEFAULT NEWID();
+                ALTER TABLE Users ADD CONSTRAINT UQ_IdentityUserId UNIQUE (IdentityUserId);
+            ");
+            migrationBuilder.Sql(@"
+                ALTER TABLE Requests ADD IdentityUserId NVARCHAR(450) NULL;
+                ALTER TABLE [RequestNotes] ADD IdentityUserId NVARCHAR(450) NULL;
+                ALTER TABLE Repeaters ADD IdentityUserId NVARCHAR(450) NULL;
+                ALTER TABLE RepeaterChangeLogs ADD IdentityUserId NVARCHAR(450) NULL;
+                ALTER TABLE ProposedCoordinationsLog ADD IdentityUserId NVARCHAR(450) NULL;
+                ALTER TABLE Permissions ADD IdentityUserId NVARCHAR(450) NULL;
+            ");
+            migrationBuilder.Sql(@"
+                UPDATE Requests SET IdentityUserId = u.IdentityUserId
+	                FROM Requests r
+	                JOIN Users u ON r.UserID = u.ID;
+                ALTER TABLE Requests
+	                ALTER COLUMN IdentityUserId NVARCHAR(450) NOT NULL;
+                ALTER TABLE [dbo].[Requests]  WITH CHECK ADD  CONSTRAINT [FK_Requests_UserID] FOREIGN KEY(IdentityUserId)
+	                REFERENCES [dbo].[Users] ([IdentityUserId]);
+                ALTER TABLE [dbo].[Requests] CHECK CONSTRAINT [FK_Requests_UserID];
+
+                UPDATE [RequestNotes] SET IdentityUserId = u.IdentityUserId
+	                FROM RequestNotes r
+	                JOIN Users u ON r.UserID = u.ID;
+                ALTER TABLE [RequestNotes]
+	                ALTER COLUMN IdentityUserId NVARCHAR(450) NOT NULL;
+                ALTER TABLE [dbo].[RequestNotes]  WITH CHECK ADD  CONSTRAINT [FK_RequestNotes_UserID] FOREIGN KEY(IdentityUserId)
+	                REFERENCES [dbo].[Users] ([IdentityUserId]);
+                ALTER TABLE [dbo].RequestNotes CHECK CONSTRAINT [FK_RequestNotes_UserID];
+
+                UPDATE Repeaters SET IdentityUserId = u.IdentityUserId
+	                FROM Repeaters r
+	                JOIN Users u ON r.TrusteeID = u.ID;
+                ALTER TABLE Repeaters
+	                ALTER COLUMN IdentityUserId NVARCHAR(450) NOT NULL;
+                ALTER TABLE [dbo].Repeaters  WITH CHECK ADD  CONSTRAINT [FK_Repeaters_IdentityUserId] FOREIGN KEY(IdentityUserId)
+	                REFERENCES [dbo].[Users] ([IdentityUserId]);
+                ALTER TABLE [dbo].Repeaters CHECK CONSTRAINT [FK_Repeaters_IdentityUserId];
+
+                UPDATE RepeaterChangeLogs SET IdentityUserId = u.IdentityUserId
+	                FROM RepeaterChangeLogs r
+	                JOIN Users u ON r.UserId = u.ID;
+                ALTER TABLE RepeaterChangeLogs
+	                ALTER COLUMN IdentityUserId NVARCHAR(450) NOT NULL;
+                ALTER TABLE [dbo].RepeaterChangeLogs  WITH CHECK ADD  CONSTRAINT [FK_RepeaterChangeLogs_IdentityUserId] FOREIGN KEY(IdentityUserId)
+	                REFERENCES [dbo].[Users] ([IdentityUserId]);
+                ALTER TABLE [dbo].RepeaterChangeLogs CHECK CONSTRAINT [FK_RepeaterChangeLogs_IdentityUserId];
+
+                UPDATE ProposedCoordinationsLog SET IdentityUserId = u.IdentityUserId
+	                FROM ProposedCoordinationsLog r
+	                JOIN Users u ON r.RequestedByUserId = u.ID;
+                ALTER TABLE ProposedCoordinationsLog
+	                ALTER COLUMN IdentityUserId NVARCHAR(450) NOT NULL;
+                ALTER TABLE [dbo].ProposedCoordinationsLog  WITH CHECK ADD  CONSTRAINT [FK_ProposedCoordinationsLog_IdentityUserId] FOREIGN KEY(IdentityUserId)
+	                REFERENCES [dbo].[Users] ([IdentityUserId]);
+                ALTER TABLE [dbo].ProposedCoordinationsLog CHECK CONSTRAINT [FK_ProposedCoordinationsLog_IdentityUserId];
+
+                UPDATE Permissions SET IdentityUserId = u.IdentityUserId
+	                FROM Permissions r
+	                JOIN Users u ON r.UserId = u.ID;
+                ALTER TABLE Permissions
+	                ALTER COLUMN IdentityUserId NVARCHAR(450) NOT NULL;
+                ALTER TABLE [dbo].Permissions  WITH CHECK ADD  CONSTRAINT [FK_Permissions_IdentityUserId] FOREIGN KEY(IdentityUserId)
+	                REFERENCES [dbo].[Users] ([IdentityUserId]);
+                ALTER TABLE [dbo].Permissions CHECK CONSTRAINT [FK_Permissions_IdentityUserId];
+            ");
+
+
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new

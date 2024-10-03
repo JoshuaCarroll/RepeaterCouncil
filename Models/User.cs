@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
 
 namespace RepeaterCouncil.Models;
 
-public partial class User
+public partial class User : IdentityUser
 {
     public int ID { get; set; }
+
+    public string IdentityUserId { get; set; } = Guid.NewGuid().ToString();
 
     public int? OldID { get; set; }
 

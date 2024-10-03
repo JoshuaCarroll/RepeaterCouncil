@@ -11,7 +11,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddHttpClient<IQrzService, QrzService>();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+builder.Services.AddIdentity<RepeaterCouncil.Models.User, IdentityRole>()
         .AddEntityFrameworkStores<ApplicationDbContext>()
         .AddDefaultTokenProviders()
         .AddDefaultUI();
@@ -38,17 +38,17 @@ app.UseAuthorization();
 app.MapRazorPages();
 
 // Apply migrations and seed roles during startup
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
+//using (var scope = app.Services.CreateScope())
+//{
+//    var services = scope.ServiceProvider;
 
-    // Apply migrations if there are any pending migrations
-    var dbContext = services.GetRequiredService<ApplicationDbContext>();
-    await dbContext.Database.MigrateAsync();
+//    // Apply migrations if there are any pending migrations
+//    var dbContext = services.GetRequiredService<ApplicationDbContext>();
+//    await dbContext.Database.MigrateAsync();
 
-    // Call the CreateRoles method to seed roles
-    await DbInitializer.CreateRoles(services);
-}
+//    // Call the CreateRoles method to seed roles
+//    await DbInitializer.CreateRoles(services);
+//}
 
 // Map areas (needed for Identity UI)
 app.MapControllerRoute(

@@ -7,7 +7,7 @@ using RepeaterCouncil.Models;
 
 namespace RepeaterCouncil.Data;
 
-public partial class ApplicationDbContext : IdentityDbContext<IdentityUser>
+public partial class ApplicationDbContext : IdentityDbContext<RepeaterCouncil.Models.User>
 {
     public ApplicationDbContext()
     {
@@ -183,7 +183,7 @@ public partial class ApplicationDbContext : IdentityDbContext<IdentityUser>
                 .HasConstraintName("FK_Permissions_RepeaterId");
 
             entity.HasOne(d => d.User).WithMany(p => p.Permissions)
-                .HasForeignKey(d => d.UserId)
+                .HasForeignKey(d => d.IdentityUserId)
                 .HasConstraintName("FK_Permissions_UserId");
         });
 
@@ -217,7 +217,7 @@ public partial class ApplicationDbContext : IdentityDbContext<IdentityUser>
                 .HasConstraintName("FK_ProposedCoordinationsLog_Answer");
 
             entity.HasOne(d => d.RequestedByUser).WithMany(p => p.ProposedCoordinationsLogs)
-                .HasForeignKey(d => d.RequestedByUserId)
+                .HasForeignKey(d => d.IdentityUserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_ProposedCoordinationsLog_RequestedByUserId");
         });
@@ -226,7 +226,7 @@ public partial class ApplicationDbContext : IdentityDbContext<IdentityUser>
         {
             entity.HasKey(e => e.ID).HasName("PK__Repeater__3214EC2743D1A15A");
 
-            entity.HasIndex(e => e.TrusteeID, "Index_TrusteeID");
+            entity.HasIndex(e => e.IdentityUserId, "Index_TrusteeID");
 
             entity.Property(e => e.AMSL).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.AdditionalInformation).HasColumnType("text");
@@ -305,7 +305,7 @@ public partial class ApplicationDbContext : IdentityDbContext<IdentityUser>
                 .HasConstraintName("FK_Repeaters_Status");
 
             entity.HasOne(d => d.Trustee).WithMany(p => p.Repeaters)
-                .HasForeignKey(d => d.TrusteeID)
+                .HasForeignKey(d => d.IdentityUserId)
                 .HasConstraintName("FK_Repeaters_TrusteeID");
 
             entity.HasOne(d => d.TypeNavigation).WithMany(p => p.Repeaters)
@@ -325,7 +325,7 @@ public partial class ApplicationDbContext : IdentityDbContext<IdentityUser>
                 .HasConstraintName("FK_RepeaterChangeLogs_RepeaterId");
 
             entity.HasOne(d => d.User).WithMany(p => p.RepeaterChangeLogs)
-                .HasForeignKey(d => d.UserId)
+                .HasForeignKey(d => d.IdentityUserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_RepeaterChangeLogs_UserId");
         });
@@ -365,7 +365,7 @@ public partial class ApplicationDbContext : IdentityDbContext<IdentityUser>
                 .HasConstraintName("FK_Requests_RepeaterID");
 
             entity.HasOne(d => d.User).WithMany(p => p.Requests)
-                .HasForeignKey(d => d.UserID)
+                .HasForeignKey(d => d.IdentityUserId)
                 .HasConstraintName("FK_Requests_UserID");
         });
 
@@ -380,7 +380,7 @@ public partial class ApplicationDbContext : IdentityDbContext<IdentityUser>
                 .HasConstraintName("FK_RequestNotes_RequestID");
 
             entity.HasOne(d => d.User).WithMany(p => p.RequestNotes)
-                .HasForeignKey(d => d.UserID)
+                .HasForeignKey(d => d.IdentityUserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_RequestNotes_UserID");
         });
@@ -444,7 +444,9 @@ public partial class ApplicationDbContext : IdentityDbContext<IdentityUser>
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.ID).HasName("PK__Users__3214EC27AB5231B4");
+            entity.HasKey(u => u.IdentityUserId);
+
+            entity.HasIndex(e => e.ID);
 
             entity.Property(e => e.Address)
                 .HasMaxLength(100)
@@ -483,6 +485,25 @@ public partial class ApplicationDbContext : IdentityDbContext<IdentityUser>
                 .HasMaxLength(10)
                 .IsUnicode(false);
         });
+
+        // Explicitly configure Identity relationships to use IdentityUserId
+        modelBuilder.Entity<IdentityUserClaim<string>>()
+            .HasOne<User>()
+            .WithMany()
+            .HasForeignKey(uc => uc.UserId)
+            .HasPrincipalKey(u => u.IdentityUserId); // Use IdentityUserId
+
+        modelBuilder.Entity<IdentityUserLogin<string>>()
+            .HasOne<User>()
+            .WithMany()
+            .HasForeignKey(ul => ul.UserId)
+            .HasPrincipalKey(u => u.IdentityUserId); // Use IdentityUserId
+
+        modelBuilder.Entity<IdentityUserRole<string>>()
+            .HasOne<User>()
+            .WithMany()
+            .HasForeignKey(ur => ur.UserId)
+            .HasPrincipalKey(u => u.IdentityUserId); // Use IdentityUserId
 
         OnModelCreatingPartial(modelBuilder);
     }

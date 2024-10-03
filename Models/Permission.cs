@@ -14,4 +14,5 @@ public partial class Permission
     public virtual Repeater? Repeater { get; set; }
 
     public virtual User? User { get; set; }
+    public string IdentityUserId { get; internal set; }
 }

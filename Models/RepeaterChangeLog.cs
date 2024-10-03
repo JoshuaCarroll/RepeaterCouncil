@@ -9,7 +9,9 @@ public partial class RepeaterChangeLog
 
     public int RepeaterId { get; set; }
 
-    public int UserId { get; set; }
+    public int UserID { get; set; }
+
+    public string IdentityUserId { get; set; }
 
     public DateTime ChangeDateTime { get; set; }
 
