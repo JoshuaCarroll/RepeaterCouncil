@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using RepeaterCouncil.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace RepeaterCouncil.Data;
 
-public partial class ApplicationDbContext : DbContext
+public partial class ApplicationDbContext : IdentityDbContext
 {
     public ApplicationDbContext()
     {
