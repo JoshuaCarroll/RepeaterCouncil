@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using RepeaterCouncil.Web.Models;
 using RepeaterCouncil.Web.Services;
 
 namespace RepeaterCouncil.Web.Controllers
@@ -7,12 +8,12 @@ namespace RepeaterCouncil.Web.Controllers
     public class QrzController : Controller
     {
         private readonly QrzAuthService _qrzAuth;
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
         public QrzController(QrzAuthService qrzAuth,
-            SignInManager<IdentityUser> signInManager,
-            UserManager<IdentityUser> userManager)
+            SignInManager<ApplicationUser> signInManager,
+            UserManager<ApplicationUser> userManager)
         {
             _qrzAuth = qrzAuth;
             _signInManager = signInManager;

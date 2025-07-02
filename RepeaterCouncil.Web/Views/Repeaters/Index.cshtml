@@ -1,0 +1,167 @@
+@model IEnumerable<RepeaterCouncil.Web.Models.Repeater>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Tenant)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Callsign)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Type)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.City)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SiteDescription)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Latitude)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Longitude)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AltitudeMeters)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OutputPowerWatts)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EffectiveRadiatedPower)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AntennaGain)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AntennaHeightMeters)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TransmitFreq)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ReceiveFreq)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.InputToneType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.InputToneValue)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OutputToneType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OutputToneValue)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AnalogBandwidth)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateCoordinated)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateUpdated)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateDecoordinated)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Tenant.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Callsign)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Type)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.City)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SiteDescription)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Latitude)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Longitude)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AltitudeMeters)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OutputPowerWatts)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EffectiveRadiatedPower)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AntennaGain)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AntennaHeightMeters)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TransmitFreq)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReceiveFreq)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.InputToneType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.InputToneValue)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OutputToneType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OutputToneValue)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AnalogBandwidth)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateCoordinated)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateUpdated)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateDecoordinated)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

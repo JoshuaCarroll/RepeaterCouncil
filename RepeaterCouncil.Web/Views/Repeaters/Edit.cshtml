@@ -1,0 +1,144 @@
+@model RepeaterCouncil.Web.Models.Repeater
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Repeater</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="TenantId" class="control-label"></label>
+                <select asp-for="TenantId" class="form-control" asp-items="ViewBag.TenantId"></select>
+                <span asp-validation-for="TenantId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Callsign" class="control-label"></label>
+                <input asp-for="Callsign" class="form-control" />
+                <span asp-validation-for="Callsign" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Type" class="control-label"></label>
+                <input asp-for="Type" class="form-control" />
+                <span asp-validation-for="Type" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Status" class="control-label"></label>
+                <input asp-for="Status" class="form-control" />
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="City" class="control-label"></label>
+                <input asp-for="City" class="form-control" />
+                <span asp-validation-for="City" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SiteDescription" class="control-label"></label>
+                <input asp-for="SiteDescription" class="form-control" />
+                <span asp-validation-for="SiteDescription" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Latitude" class="control-label"></label>
+                <input asp-for="Latitude" class="form-control" />
+                <span asp-validation-for="Latitude" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Longitude" class="control-label"></label>
+                <input asp-for="Longitude" class="form-control" />
+                <span asp-validation-for="Longitude" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AltitudeMeters" class="control-label"></label>
+                <input asp-for="AltitudeMeters" class="form-control" />
+                <span asp-validation-for="AltitudeMeters" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="OutputPowerWatts" class="control-label"></label>
+                <input asp-for="OutputPowerWatts" class="form-control" />
+                <span asp-validation-for="OutputPowerWatts" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EffectiveRadiatedPower" class="control-label"></label>
+                <input asp-for="EffectiveRadiatedPower" class="form-control" />
+                <span asp-validation-for="EffectiveRadiatedPower" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AntennaGain" class="control-label"></label>
+                <input asp-for="AntennaGain" class="form-control" />
+                <span asp-validation-for="AntennaGain" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AntennaHeightMeters" class="control-label"></label>
+                <input asp-for="AntennaHeightMeters" class="form-control" />
+                <span asp-validation-for="AntennaHeightMeters" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TransmitFreq" class="control-label"></label>
+                <input asp-for="TransmitFreq" class="form-control" />
+                <span asp-validation-for="TransmitFreq" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ReceiveFreq" class="control-label"></label>
+                <input asp-for="ReceiveFreq" class="form-control" />
+                <span asp-validation-for="ReceiveFreq" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="InputToneType" class="control-label"></label>
+                <input asp-for="InputToneType" class="form-control" />
+                <span asp-validation-for="InputToneType" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="InputToneValue" class="control-label"></label>
+                <input asp-for="InputToneValue" class="form-control" />
+                <span asp-validation-for="InputToneValue" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="OutputToneType" class="control-label"></label>
+                <input asp-for="OutputToneType" class="form-control" />
+                <span asp-validation-for="OutputToneType" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="OutputToneValue" class="control-label"></label>
+                <input asp-for="OutputToneValue" class="form-control" />
+                <span asp-validation-for="OutputToneValue" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AnalogBandwidth" class="control-label"></label>
+                <input asp-for="AnalogBandwidth" class="form-control" />
+                <span asp-validation-for="AnalogBandwidth" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateCoordinated" class="control-label"></label>
+                <input asp-for="DateCoordinated" class="form-control" />
+                <span asp-validation-for="DateCoordinated" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateUpdated" class="control-label"></label>
+                <input asp-for="DateUpdated" class="form-control" />
+                <span asp-validation-for="DateUpdated" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateDecoordinated" class="control-label"></label>
+                <input asp-for="DateDecoordinated" class="form-control" />
+                <span asp-validation-for="DateDecoordinated" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

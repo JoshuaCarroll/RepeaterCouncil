@@ -10,7 +10,7 @@ namespace RepeaterCouncil.Web.Models
         public Repeater Repeater { get; set; }
 
         public string UserId { get; set; }
-        public IdentityUser User { get; set; }
+        public ApplicationUser User { get; set; }
 
         public DateTime CreatedAt { get; set; }
 

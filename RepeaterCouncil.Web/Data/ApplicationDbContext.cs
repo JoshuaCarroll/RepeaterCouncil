@@ -4,10 +4,9 @@ using RepeaterCouncil.Web.Models;
 
 namespace RepeaterCouncil.Web.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options) { }
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
         public DbSet<CoordinationRule> CoordinationRules { get; set; }
         public DbSet<Link> Links { get; set; }
