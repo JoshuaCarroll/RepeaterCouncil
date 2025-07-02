@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using RepeaterCouncil.Web.Data;
+using RepeaterCouncil.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,9 @@ builder.Services.AddAuthentication()
         options.ClientId = builder.Configuration["Authentication:Microsoft:ClientId"];
         options.ClientSecret = builder.Configuration["Authentication:Microsoft:ClientSecret"];
     });
+
+// Register the QrzAuthService as a singleton
+builder.Services.AddHttpClient<QrzAuthService>();
 
 
 // Add services to the container.

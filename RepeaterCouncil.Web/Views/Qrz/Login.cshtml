@@ -1,0 +1,10 @@
+﻿<h2>Login with QRZ.com</h2>
+<form asp-action="Login" method="post">
+    <label>Callsign</label><input name="callsign" />
+    <label>Password</label><input type="password" name="password" />
+    <button type="submit">Login</button>
+</form>
+@if (ViewBag.Error != null)
+{
+    <div>@ViewBag.Error</div>
+}
