@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using RepeaterCouncil.Web.Models;
 
@@ -12,5 +12,6 @@ namespace RepeaterCouncil.Web.Data
         public DbSet<Link> Links { get; set; }
         public DbSet<RepeaterNote> RepeaterNotes { get; set; }
         public DbSet<Repeater> Repeaters { get; set; }
+        public DbSet<Tenant> Tenants { get; set; } = default!;
     }
 }
