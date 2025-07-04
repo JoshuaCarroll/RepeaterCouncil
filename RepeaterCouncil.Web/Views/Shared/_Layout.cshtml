@@ -24,8 +24,34 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            Repeater Directory
                         </li>
+                        <li class="nav-item">
+                            About Us
+                        </li>
+                        <li class="nav-item">
+                            Procedures
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="/Identity/Account/Login">Login</a>
+                        </li>
+                        @if (User.IsInRole("SiteAdministrator"))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="adminMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Admin
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="adminMenu">
+                                    <li><a class="dropdown-item" asp-controller="Users" asp-action="Index">Manage Users</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Tenants" asp-action="Index">Manage Tenants</a></li>
+                                    <li><a class="dropdown-item" asp-controller="CoordinationRules" asp-action="Index">Manage Coordination Rules</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Repeaters" asp-action="Index">Manage Repeaters</a></li>
+                                    <li><a class="dropdown-item" asp-controller="RepeaterNotes" asp-action="Index">Manage Repeater Notes</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Links" asp-action="Index">Manage Links</a></li>
+                                </ul>
+                            </li>
+                        }
+
                     </ul>
                 </div>
             </div>

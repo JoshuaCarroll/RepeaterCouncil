@@ -44,9 +44,6 @@
                     </p>
                 </div>
             </form>
-            <div>
-                <a asp-controller="Qrz" asp-action="Login">Login with QRZ.com</a>
-            </div>
 
         </section>
     </div>
@@ -73,6 +70,7 @@
                                 {
                                     <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
                                 }
+                                <a class="btn btn-primary" asp-controller="Qrz" asp-action="Login">Login with QRZ (must have a QRZ subscription)</a>
                             </p>
                         </div>
                     </form>
