@@ -24,17 +24,15 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            Repeater Directory
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Repeater Directory</a>
                         </li>
                         <li class="nav-item">
-                            About Us
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">About Us</a>
                         </li>
                         <li class="nav-item">
-                            Procedures
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Procedures</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" href="/Identity/Account/Login">Login</a>
-                        </li>
+                        <partial name="_LoginPartial" />
                         @if (User.IsInRole("SiteAdministrator"))
                         {
                             <li class="nav-item dropdown">
@@ -51,7 +49,6 @@
                                 </ul>
                             </li>
                         }
-
                     </ul>
                 </div>
             </div>
