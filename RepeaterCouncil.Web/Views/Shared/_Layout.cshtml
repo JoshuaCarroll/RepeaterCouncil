@@ -32,7 +32,6 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Procedures</a>
                         </li>
-                        <partial name="_LoginPartial" />
                         @if (User.IsInRole("SiteAdministrator"))
                         {
                             <li class="nav-item dropdown">
@@ -49,6 +48,7 @@
                                 </ul>
                             </li>
                         }
+                        <partial name="_LoginPartial" />
                     </ul>
                 </div>
             </div>
