@@ -15,6 +15,7 @@
             <div class="form-group">
                 <label asp-for="TenantId" class="control-label"></label>
                 <select asp-for="TenantId" class ="form-control" asp-items="ViewBag.TenantId"></select>
+                <span asp-validation-for="TenantId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Callsign" class="control-label"></label>
@@ -23,12 +24,12 @@
             </div>
             <div class="form-group">
                 <label asp-for="Type" class="control-label"></label>
-                <input asp-for="Type" class="form-control" />
+                <select asp-for="Type" class="form-control" asp-items="ViewBag.Type"></select>
                 <span asp-validation-for="Type" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Status" class="control-label"></label>
-                <input asp-for="Status" class="form-control" />
+                <select asp-for="Status" class="form-control" asp-items="ViewBag.Status"></select>
                 <span asp-validation-for="Status" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -88,7 +89,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="InputToneType" class="control-label"></label>
-                <input asp-for="InputToneType" class="form-control" />
+                <select asp-for="InputToneType" class="form-control" asp-items="ViewBag.InputToneType"></select>
                 <span asp-validation-for="InputToneType" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -98,7 +99,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="OutputToneType" class="control-label"></label>
-                <input asp-for="OutputToneType" class="form-control" />
+                <select asp-for="OutputToneType" class="form-control" asp-items="ViewBag.OutputToneType"></select>
                 <span asp-validation-for="OutputToneType" class="text-danger"></span>
             </div>
             <div class="form-group">

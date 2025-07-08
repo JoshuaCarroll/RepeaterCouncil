@@ -18,16 +18,25 @@
                 <select asp-for="RepeaterId" class="form-control" asp-items="ViewBag.RepeaterId"></select>
                 <span asp-validation-for="RepeaterId" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="LinkType" class="control-label"></label>
-                <input asp-for="LinkType" class="form-control" />
+                <select asp-for="LinkType" class="form-control" asp-items="ViewBag.LinkTypes" id="linkTypeDropdown"></select>
                 <span asp-validation-for="LinkType" class="text-danger"></span>
             </div>
-            <div class="form-group">
+
+            <div id="rfLinkSection" style="display:none;">
+                <label asp-for="LinkedRepeaterId" class="control-label"></label>
+                <select asp-for="LinkedRepeaterId" class="form-control" asp-items="ViewBag.LinkedRepeaterId"></select>
+                <span asp-validation-for="LinkedRepeaterId" class="text-danger"></span>
+            </div>
+
+            <div id="linkDetailsSection">
                 <label asp-for="LinkDetails" class="control-label"></label>
                 <input asp-for="LinkDetails" class="form-control" />
                 <span asp-validation-for="LinkDetails" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
@@ -41,4 +50,21 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var dropdown = document.getElementById("linkTypeDropdown");
+            function toggleSections() {
+                if (dropdown.value == "1") { // RadioRf enum value
+                    document.getElementById("rfLinkSection").style.display = "block";
+                    document.getElementById("linkDetailsSection").style.display = "none";
+                } else {
+                    document.getElementById("rfLinkSection").style.display = "none";
+                    document.getElementById("linkDetailsSection").style.display = "block";
+                }
+            }
+            dropdown.addEventListener("change", toggleSections);
+            toggleSections(); // run on load
+        });
+    </script>
 }

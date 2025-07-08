@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using RepeaterCouncil.Web.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace RepeaterCouncil.Web.Models
 {
@@ -9,18 +10,18 @@ namespace RepeaterCouncil.Web.Models
         [Display(Name = "Tenant")]
         public int TenantId { get; set; }
 
-        public Tenant Tenant { get; set; }
+        public Tenant? Tenant { get; set; } = null;
 
         public string Callsign { get; set; }
 
-        public string Type { get; set; } // from code table
+        public RepeaterType Type { get; set; }
 
-        public string Status { get; set; } // from code table
+        public RepeaterStatus Status { get; set; } // from code table
 
         public string City { get; set; }
 
         [Display(Name = "Location Description")]
-        public string SiteDescription { get; set; }
+        public string SiteDescription { get; set; } = "";
 
         public double Latitude { get; set; }
 
@@ -48,13 +49,13 @@ namespace RepeaterCouncil.Web.Models
         public double ReceiveFreq { get; set; }
 
         [Display(Name = "Input Tone Type")]
-        public string InputToneType { get; set; }
+        public ToneSquelchType InputToneType { get; set; }
 
         [Display(Name = "Input Tone Value")]
         public double? InputToneValue { get; set; }
 
         [Display(Name = "Output Tone Type")]
-        public string OutputToneType { get; set; }
+        public ToneSquelchType OutputToneType { get; set; }
 
         [Display(Name = "Output Tone Value")]
         public double? OutputToneValue { get; set; }
@@ -69,11 +70,11 @@ namespace RepeaterCouncil.Web.Models
         public DateTime? DateUpdated { get; set; }
 
         [Display(Name = "Date Decoordinated")]
-        public DateTime? DateDecoordinated { get; set; }
+        public DateTime? DateDecoordinated { get; set; } = null;
 
-        public ICollection<RepeaterNote> Notes { get; set; }
+        public ICollection<RepeaterNote>? Notes { get; set; } = null;
 
-        public ICollection<Link> Links { get; set; }
+        public ICollection<Link>? Links { get; set; } = null;
     }
 
 }

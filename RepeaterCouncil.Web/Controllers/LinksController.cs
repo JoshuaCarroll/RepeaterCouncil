@@ -1,12 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using RepeaterCouncil.Web.Data;
+using RepeaterCouncil.Web.Enums;
 using RepeaterCouncil.Web.Models;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace RepeaterCouncil.Web.Controllers
 {
@@ -45,19 +47,46 @@ namespace RepeaterCouncil.Web.Controllers
             return View(link);
         }
 
+        private void PrepareSelectBoxes()
+        {
+            var repeaters = _context.Repeaters
+                .OrderBy(r => r.Callsign)
+                .ThenBy(r => r.TransmitFreq)
+                .Select(r => new {
+                    r.Id,
+                    Display = r.Callsign + " - " + r.TransmitFreq + " MHz"
+                }).ToList();
+
+            ViewData["RepeaterId"] = new SelectList(repeaters, "Id", "Display");
+            ViewData["LinkedRepeaterId"] = new SelectList(repeaters, "Id", "Display");
+
+            var linkTypes = Enum.GetValues(typeof(LinkType))
+                .Cast<LinkType>()
+                .Select(lt => new {
+                    Id = (int)lt,
+                    Name = lt.GetType()
+                             .GetField(lt.ToString())
+                             ?.GetCustomAttributes(typeof(DisplayAttribute), false)
+                             .Cast<DisplayAttribute>()
+                             .FirstOrDefault()?.Name ?? lt.ToString()
+                }).ToList();
+            ViewData["LinkTypes"] = new SelectList(linkTypes, "Id", "Name");
+        }
+
         // GET: Links/Create
         public IActionResult Create()
         {
-            ViewData["RepeaterId"] = new SelectList(_context.Repeaters, "Id", "Id");
+            PrepareSelectBoxes();
             return View();
         }
+
 
         // POST: Links/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,RepeaterId,LinkType,Destination")] Link link)
+        public async Task<IActionResult> Create([Bind("Id,RepeaterId,LinkType,LinkDetails,LinkedRepeaterId")] Link link)
         {
             if (ModelState.IsValid)
             {
@@ -65,7 +94,7 @@ namespace RepeaterCouncil.Web.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["RepeaterId"] = new SelectList(_context.Repeaters, "Id", "Id", link.RepeaterId);
+            PrepareSelectBoxes();
             return View(link);
         }
 
@@ -82,7 +111,7 @@ namespace RepeaterCouncil.Web.Controllers
             {
                 return NotFound();
             }
-            ViewData["RepeaterId"] = new SelectList(_context.Repeaters, "Id", "Id", link.RepeaterId);
+            PrepareSelectBoxes();
             return View(link);
         }
 
@@ -91,7 +120,7 @@ namespace RepeaterCouncil.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,RepeaterId,LinkType,Destination")] Link link)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,RepeaterId,LinkType,LinkDetails,LinkedRepeaterId")] Link link)
         {
             if (id != link.Id)
             {
@@ -118,7 +147,7 @@ namespace RepeaterCouncil.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["RepeaterId"] = new SelectList(_context.Repeaters, "Id", "Id", link.RepeaterId);
+            PrepareSelectBoxes();
             return View(link);
         }
 

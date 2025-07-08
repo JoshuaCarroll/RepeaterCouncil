@@ -1,12 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using RepeaterCouncil.Web.Data;
+using RepeaterCouncil.Web.Enums;
 using RepeaterCouncil.Web.Models;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace RepeaterCouncil.Web.Controllers
 {
@@ -24,6 +26,51 @@ namespace RepeaterCouncil.Web.Controllers
         {
             var applicationDbContext = _context.Repeaters.Include(r => r.Tenant);
             return View(await applicationDbContext.ToListAsync());
+        }
+
+        private void PrepareSelectLists()
+        {
+            ViewData["TenantId"] = new SelectList(_context.Set<Tenant>().OrderBy(t => t.Name), "Id", "Name");
+
+            var repeaterTypes = Enum.GetValues(typeof(RepeaterType))
+            .Cast<RepeaterType>()
+            .Select(rt => new {
+                Id = (int)rt,
+                Name = rt.GetType()
+                .GetField(rt.ToString())
+                ?.GetCustomAttributes(typeof(DisplayAttribute), false)
+                .Cast<DisplayAttribute>()
+                .FirstOrDefault()?.Name ?? rt.ToString()
+            }).ToList()
+            .OrderBy(rt => rt.Id);
+            ViewData["Type"] = new SelectList(repeaterTypes, "Id", "Name");
+
+            var repeaterStatuses = Enum.GetValues(typeof(RepeaterStatus))
+            .Cast<RepeaterStatus>()
+            .Select(lt => new {
+                Id = (int)lt,
+                Name = lt.GetType()
+                .GetField(lt.ToString())
+                ?.GetCustomAttributes(typeof(DisplayAttribute), false)
+                .Cast<DisplayAttribute>()
+                .FirstOrDefault()?.Name ?? lt.ToString()
+            }).ToList()
+            .OrderBy(rt => rt.Id);
+            ViewData["Status"] = new SelectList(repeaterStatuses, "Id", "Name", "Operational");
+
+            var toneSquelchTypes = Enum.GetValues(typeof(ToneSquelchType))
+            .Cast<ToneSquelchType>()
+            .Select(lt => new {
+                Id = (int)lt,
+                Name = lt.GetType()
+                .GetField(lt.ToString())
+                ?.GetCustomAttributes(typeof(DisplayAttribute), false)
+                .Cast<DisplayAttribute>()
+                .FirstOrDefault()?.Name ?? lt.ToString()
+            }).ToList()
+            .OrderBy(rt => rt.Id);
+            ViewData["InputToneType"] = new SelectList(toneSquelchTypes, "Id", "Name", "None");
+            ViewData["OutputToneType"] = new SelectList(toneSquelchTypes, "Id", "Name", "None");
         }
 
         // GET: Repeaters/Details/5
@@ -48,7 +95,8 @@ namespace RepeaterCouncil.Web.Controllers
         // GET: Repeaters/Create
         public IActionResult Create()
         {
-            ViewData["TenantId"] = new SelectList(_context.Set<Tenant>(), "Id", "Name");
+            PrepareSelectLists();
+
             return View();
         }
 
@@ -65,7 +113,9 @@ namespace RepeaterCouncil.Web.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["TenantId"] = new SelectList(_context.Set<Tenant>(), "Id", "Id", repeater.TenantId);
+
+            PrepareSelectLists();
+
             return View(repeater);
         }
 
@@ -82,7 +132,9 @@ namespace RepeaterCouncil.Web.Controllers
             {
                 return NotFound();
             }
-            ViewData["TenantId"] = new SelectList(_context.Set<Tenant>(), "Id", "Id", repeater.TenantId);
+
+            PrepareSelectLists();
+
             return View(repeater);
         }
 
@@ -118,7 +170,7 @@ namespace RepeaterCouncil.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["TenantId"] = new SelectList(_context.Set<Tenant>(), "Id", "Id", repeater.TenantId);
+            PrepareSelectLists();
             return View(repeater);
         }
 
