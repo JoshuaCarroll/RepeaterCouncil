@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - RepeaterCouncil.Web</title>
+    <title>@ViewData["Title"] - RepeaterCouncil</title>
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
@@ -32,22 +32,7 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Procedures</a>
                         </li>
-                        @if (User.IsInRole("SiteAdministrator"))
-                        {
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="adminMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Admin
-                                </a>
-                                <ul class="dropdown-menu" aria-labelledby="adminMenu">
-                                    <li><a class="dropdown-item" asp-controller="Users" asp-action="Index">Manage Users</a></li>
-                                    <li><a class="dropdown-item" asp-controller="Tenants" asp-action="Index">Manage Tenants</a></li>
-                                    <li><a class="dropdown-item" asp-controller="CoordinationRules" asp-action="Index">Manage Coordination Rules</a></li>
-                                    <li><a class="dropdown-item" asp-controller="Repeaters" asp-action="Index">Manage Repeaters</a></li>
-                                    <li><a class="dropdown-item" asp-controller="RepeaterNotes" asp-action="Index">Manage Repeater Notes</a></li>
-                                    <li><a class="dropdown-item" asp-controller="Links" asp-action="Index">Manage Links</a></li>
-                                </ul>
-                            </li>
-                        }
+                        <partial name="_SiteAdministratorPartial" />
                         <partial name="_LoginPartial" />
                     </ul>
                 </div>
@@ -62,7 +47,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2025 - RepeaterCouncil.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2025 - RepeaterCouncil - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

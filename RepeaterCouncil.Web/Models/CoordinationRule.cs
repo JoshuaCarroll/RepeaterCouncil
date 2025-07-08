@@ -1,13 +1,17 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.ComponentModel.DataAnnotations;
 
 namespace RepeaterCouncil.Web.Models
 {
     public class CoordinationRule
     {
         public int Id { get; set; }
+
+        [Display(Name = "Tenant")]
         public int TenantId { get; set; }
 
-        public Tenant Tenant { get; set; }
+        [BindNever]
+        public Tenant? Tenant { get; set; }
 
         [Display(Name = "Frequency Range Start (MHz)")]
         public double FrequencyStart { get; set; }

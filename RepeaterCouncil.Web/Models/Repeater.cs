@@ -5,18 +5,25 @@ namespace RepeaterCouncil.Web.Models
     public class Repeater
     {
         public int Id { get; set; }
+
+        [Display(Name = "Tenant")]
         public int TenantId { get; set; }
+
         public Tenant Tenant { get; set; }
 
         public string Callsign { get; set; }
+
         public string Type { get; set; } // from code table
+
         public string Status { get; set; } // from code table
+
         public string City { get; set; }
 
         [Display(Name = "Location Description")]
         public string SiteDescription { get; set; }
 
         public double Latitude { get; set; }
+
         public double Longitude { get; set; }
 
         [Display(Name = "Altitude (meters)")]
@@ -65,6 +72,7 @@ namespace RepeaterCouncil.Web.Models
         public DateTime? DateDecoordinated { get; set; }
 
         public ICollection<RepeaterNote> Notes { get; set; }
+
         public ICollection<Link> Links { get; set; }
     }
 

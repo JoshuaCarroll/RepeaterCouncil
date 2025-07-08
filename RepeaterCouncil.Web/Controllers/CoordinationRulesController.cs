@@ -10,23 +10,23 @@ using RepeaterCouncil.Web.Models;
 
 namespace RepeaterCouncil.Web.Controllers
 {
-    public class RepeatersController : Controller
+    public class CoordinationRulesController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public RepeatersController(ApplicationDbContext context)
+        public CoordinationRulesController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Repeaters
+        // GET: CoordinationRules
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Repeaters.Include(r => r.Tenant);
+            var applicationDbContext = _context.CoordinationRules.Include(c => c.Tenant);
             return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: Repeaters/Details/5
+        // GET: CoordinationRules/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,42 +34,55 @@ namespace RepeaterCouncil.Web.Controllers
                 return NotFound();
             }
 
-            var repeater = await _context.Repeaters
-                .Include(r => r.Tenant)
+            var coordinationRule = await _context.CoordinationRules
+                .Include(c => c.Tenant)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (repeater == null)
+            if (coordinationRule == null)
             {
                 return NotFound();
             }
 
-            return View(repeater);
+            return View(coordinationRule);
         }
 
-        // GET: Repeaters/Create
+        // GET: CoordinationRules/Create
         public IActionResult Create()
         {
-            ViewData["TenantId"] = new SelectList(_context.Set<Tenant>(), "Id", "Name");
+            ViewData["TenantId"] = new SelectList(_context.Tenants, "Id", "Name");
             return View();
         }
 
-        // POST: Repeaters/Create
+        // POST: CoordinationRules/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,TenantId,Callsign,Type,Status,City,SiteDescription,Latitude,Longitude,AltitudeMeters,OutputPowerWatts,EffectiveRadiatedPower,AntennaGain,AntennaHeightMeters,TransmitFreq,ReceiveFreq,InputToneType,InputToneValue,OutputToneType,OutputToneValue,AnalogBandwidth,DateCoordinated,DateUpdated,DateDecoordinated")] Repeater repeater)
+        public async Task<IActionResult> Create([Bind("Id,TenantId,FrequencyStart,FrequencyEnd,SpacingMHz,SeparationMiles")] CoordinationRule coordinationRule)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(repeater);
+                _context.Add(coordinationRule);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["TenantId"] = new SelectList(_context.Set<Tenant>(), "Id", "Id", repeater.TenantId);
-            return View(repeater);
+            else
+            {
+                var errors = ModelState
+                    .Where(x => x.Value.Errors.Count > 0)
+                    .Select(x => new { Field = x.Key, Errors = x.Value.Errors.Select(e => e.ErrorMessage) });
+
+                // Place a breakpoint here or log to console
+                Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(errors));
+
+                ViewData["TenantId"] = new SelectList(_context.Tenants, "Id", "Name", coordinationRule.TenantId);
+                return View(coordinationRule);
+            }
+            
+            ViewData["TenantId"] = new SelectList(_context.Tenants, "Id", "Name", coordinationRule.TenantId);
+            return View(coordinationRule);
         }
 
-        // GET: Repeaters/Edit/5
+        // GET: CoordinationRules/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -77,23 +90,23 @@ namespace RepeaterCouncil.Web.Controllers
                 return NotFound();
             }
 
-            var repeater = await _context.Repeaters.FindAsync(id);
-            if (repeater == null)
+            var coordinationRule = await _context.CoordinationRules.FindAsync(id);
+            if (coordinationRule == null)
             {
                 return NotFound();
             }
-            ViewData["TenantId"] = new SelectList(_context.Set<Tenant>(), "Id", "Id", repeater.TenantId);
-            return View(repeater);
+            ViewData["TenantId"] = new SelectList(_context.Tenants, "Id", "Name", coordinationRule.TenantId);
+            return View(coordinationRule);
         }
 
-        // POST: Repeaters/Edit/5
+        // POST: CoordinationRules/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,TenantId,Callsign,Type,Status,City,SiteDescription,Latitude,Longitude,AltitudeMeters,OutputPowerWatts,EffectiveRadiatedPower,AntennaGain,AntennaHeightMeters,TransmitFreq,ReceiveFreq,InputToneType,InputToneValue,OutputToneType,OutputToneValue,AnalogBandwidth,DateCoordinated,DateUpdated,DateDecoordinated")] Repeater repeater)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,TenantId,FrequencyStart,FrequencyEnd,SpacingMHz,SeparationMiles")] CoordinationRule coordinationRule)
         {
-            if (id != repeater.Id)
+            if (id != coordinationRule.Id)
             {
                 return NotFound();
             }
@@ -102,12 +115,12 @@ namespace RepeaterCouncil.Web.Controllers
             {
                 try
                 {
-                    _context.Update(repeater);
+                    _context.Update(coordinationRule);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!RepeaterExists(repeater.Id))
+                    if (!CoordinationRuleExists(coordinationRule.Id))
                     {
                         return NotFound();
                     }
@@ -118,11 +131,11 @@ namespace RepeaterCouncil.Web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["TenantId"] = new SelectList(_context.Set<Tenant>(), "Id", "Id", repeater.TenantId);
-            return View(repeater);
+            ViewData["TenantId"] = new SelectList(_context.Tenants, "Id", "Name", coordinationRule.TenantId);
+            return View(coordinationRule);
         }
 
-        // GET: Repeaters/Delete/5
+        // GET: CoordinationRules/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -130,35 +143,35 @@ namespace RepeaterCouncil.Web.Controllers
                 return NotFound();
             }
 
-            var repeater = await _context.Repeaters
-                .Include(r => r.Tenant)
+            var coordinationRule = await _context.CoordinationRules
+                .Include(c => c.Tenant)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (repeater == null)
+            if (coordinationRule == null)
             {
                 return NotFound();
             }
 
-            return View(repeater);
+            return View(coordinationRule);
         }
 
-        // POST: Repeaters/Delete/5
+        // POST: CoordinationRules/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var repeater = await _context.Repeaters.FindAsync(id);
-            if (repeater != null)
+            var coordinationRule = await _context.CoordinationRules.FindAsync(id);
+            if (coordinationRule != null)
             {
-                _context.Repeaters.Remove(repeater);
+                _context.CoordinationRules.Remove(coordinationRule);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool RepeaterExists(int id)
+        private bool CoordinationRuleExists(int id)
         {
-            return _context.Repeaters.Any(e => e.Id == id);
+            return _context.CoordinationRules.Any(e => e.Id == id);
         }
     }
 }

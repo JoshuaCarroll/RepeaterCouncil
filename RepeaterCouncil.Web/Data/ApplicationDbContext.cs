@@ -13,5 +13,16 @@ namespace RepeaterCouncil.Web.Data
         public DbSet<RepeaterNote> RepeaterNotes { get; set; }
         public DbSet<Repeater> Repeaters { get; set; }
         public DbSet<Tenant> Tenants { get; set; } = default!;
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Link>()
+                .HasOne(l => l.LinkedRepeater)
+                .WithMany()
+                .HasForeignKey(l => l.LinkedRepeaterId)
+                .OnDelete(DeleteBehavior.Restrict);
+        }
     }
 }

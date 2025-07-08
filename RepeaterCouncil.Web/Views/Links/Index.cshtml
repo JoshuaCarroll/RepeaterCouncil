@@ -19,7 +19,7 @@
                 @Html.DisplayNameFor(model => model.LinkType)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Destination)
+                @Html.DisplayNameFor(model => model.LinkDetails)
             </th>
             <th></th>
         </tr>
@@ -34,7 +34,7 @@
                 @Html.DisplayFor(modelItem => item.LinkType)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Destination)
+                @Html.DisplayFor(modelItem => item.LinkDetails)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

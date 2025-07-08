@@ -1,10 +1,10 @@
-@model IEnumerable<RepeaterCouncil.Web.Models.Repeater>
+@model IEnumerable<RepeaterCouncil.Web.Models.CoordinationRule>
 
 @{
-    ViewData["Title"] = "Repeaters";
+    ViewData["Title"] = "Coordination Rules";
 }
 
-<h1>Repeaters</h1>
+<h1>Coordination Rules</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -16,19 +16,16 @@
                 @Html.DisplayNameFor(model => model.Tenant)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Callsign)
+                @Html.DisplayNameFor(model => model.FrequencyStart)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TransmitFreq)
+                @Html.DisplayNameFor(model => model.FrequencyEnd)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.City)
+                @Html.DisplayNameFor(model => model.SpacingMHz)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DateUpdated)
+                @Html.DisplayNameFor(model => model.SeparationMiles)
             </th>
             <th></th>
         </tr>
@@ -37,22 +34,19 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Tenant.Id)
+                @Html.DisplayFor(modelItem => item.Tenant.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Callsign)
+                @Html.DisplayFor(modelItem => item.FrequencyStart)
             </td>
             <td>
-                @Html.DisplayFor(model => item.TransmitFreq)
+                @Html.DisplayFor(modelItem => item.FrequencyEnd)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.City)
+                @Html.DisplayFor(modelItem => item.SpacingMHz)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateUpdated)
+                @Html.DisplayFor(modelItem => item.SeparationMiles)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
