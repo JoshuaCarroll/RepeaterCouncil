@@ -1,8 +1,9 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
+    var TenantName = Context.Items["TenantName"]!.ToString();
 }
 
 <div class="text-center">
-    <h1 class="display-4">Repeater Council</h1>
-    <p>Your repeater council coordinates amateur radio repeater frequencies. We utilize available data from our own database, as well as information from surrounding states. We use our own standards and guidelines (based on those of the defunct Mid-America Coordination Council).</p>
+    <h1 class="display-4">@TenantName Repeater Council</h1>
+    <p>Your repeater council coordinates amateur radio repeater frequencies. We utilize available data from our own database, as well as information from surrounding states. We use our own standards and guidelines, originally based on those of the Mid-America Coordination Council (defunct).</p>
 </div>

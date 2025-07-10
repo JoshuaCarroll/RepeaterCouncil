@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using RepeaterCouncil.Web.Data;
+using RepeaterCouncil.Web.Middleware;
 using RepeaterCouncil.Web.Models;
 using RepeaterCouncil.Web.Services;
 
@@ -53,6 +54,8 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapStaticAssets();
+
+app.UseMiddleware<TenantResolverMiddleware>();
 
 app.MapControllerRoute(
     name: "default",
