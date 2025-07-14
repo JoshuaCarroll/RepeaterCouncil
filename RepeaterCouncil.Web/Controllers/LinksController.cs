@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,8 @@ using System.Threading.Tasks;
 
 namespace RepeaterCouncil.Web.Controllers
 {
+    [Authorize(Roles = "SiteAdministrator,TenantCoordinator")]
+    [Route("Admin/{controller=Home}/{action=Index}/{id?}")]
     public class LinksController : Controller
     {
         private readonly ApplicationDbContext _context;

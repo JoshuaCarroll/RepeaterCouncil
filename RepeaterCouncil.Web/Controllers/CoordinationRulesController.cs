@@ -1,15 +1,18 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using RepeaterCouncil.Web.Data;
 using RepeaterCouncil.Web.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace RepeaterCouncil.Web.Controllers
 {
+    [Authorize(Roles = "SiteAdministrator,TenantCoordinator")]
+    [Route("Admin/{controller=Home}/{action=Index}/{id?}")]
     public class CoordinationRulesController : Controller
     {
         private readonly ApplicationDbContext _context;
