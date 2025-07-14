@@ -1,6 +1,8 @@
 ﻿using SendGrid.Helpers.Mail;
 using SendGrid;
 using HtmlAgilityPack;
+using Microsoft.AspNetCore.Identity.UI;
+using Microsoft.IdentityModel.Tokens;
 
 namespace RepeaterCouncil.Web.Services
 {
@@ -16,12 +18,21 @@ namespace RepeaterCouncil.Web.Services
     public class EmailSender : IEmailSender
     {
         private readonly IConfiguration _configuration;
-        //private readonly ILogger<EmailSender> _logger;
-        private EmailAddress fromEmailAddress = new();
+        private EmailAddress fromEmailAddress;
 
         public EmailSender(IConfiguration configuration)
         {
             _configuration = configuration;
+
+            string? _sendGridApiKey = _configuration["SendGridApiKey"];
+            string? _sendGridSenderEmail = _configuration["SendGridSenderEmail"];
+            string? _sendGridSenderName = _configuration["SendGridSenderName"];
+
+            if (string.IsNullOrEmpty(_sendGridApiKey) || string.IsNullOrEmpty(_sendGridSenderEmail) || string.IsNullOrEmpty(_sendGridSenderName))
+            {
+                throw new InvalidOperationException("SendGrid configuration is not properly set in the app settings.");
+            }
+
             fromEmailAddress = new EmailAddress(_configuration["SendGridSenderEmail"], _configuration["SendGridSenderName"]);
         }
 
