@@ -1,17 +1,18 @@
 ﻿
 @if (User.IsInRole("SiteAdministrator"))
 {
-    <li class="nav-item dropdown">
+    <div class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="adminMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Admin
         </a>
-        <ul class="dropdown-menu" aria-labelledby="adminMenu">
-            <li><a class="dropdown-item" asp-controller="CoordinationRules" asp-action="Index">Coordination Rules</a></li>
-            <li><a class="dropdown-item" asp-controller="Links" asp-action="Index">Links</a></li>
-            <li><a class="dropdown-item" asp-controller="Repeaters" asp-action="Index">Repeaters</a></li>
-            <li><a class="dropdown-item" asp-controller="RepeaterNotes" asp-action="Index">Repeater Notes</a></li>
-            <li><a class="dropdown-item" asp-controller="Tenants" asp-action="Index">Tenants</a></li>
-            <li><a class="dropdown-item" asp-controller="Users" asp-action="Index">Users</a></li>
-        </ul>
-    </li>
+        <div class="dropdown-menu" aria-labelledby="adminMenu">
+            <div><a class="dropdown-item" asp-controller="CoordinationRules" asp-action="Index">Coordination Rules</a></div>
+            <div><a class="dropdown-item" asp-controller="Repeaters" asp-action="Index">Repeaters</a></div>
+            <div><a class="dropdown-item" asp-controller="Links" asp-action="Index"> - Links</a></div>
+            <div><a class="dropdown-item" asp-controller="RepeaterNotes" asp-action="Index"> - Notes</a></div>
+            <div><a class="dropdown-item" asp-controller="Users" asp-action="Index">Users</a></div>
+            <div class="dropdown-divider"></div>
+            <div><a class="dropdown-item" asp-controller="Tenants" asp-action="Index">Tenants</a></div>
+        </div>
+    </div>
 }

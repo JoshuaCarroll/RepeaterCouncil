@@ -18,5 +18,4 @@ namespace RepeaterCouncil.Web.Models
 
         public string Note { get; set; }
     }
-
 }
