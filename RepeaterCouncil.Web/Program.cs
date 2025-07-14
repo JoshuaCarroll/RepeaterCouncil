@@ -35,6 +35,7 @@ builder.Services.AddHttpClient<QrzAuthService>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 var app = builder.Build();
 
