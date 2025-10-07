@@ -23,6 +23,12 @@ namespace RepeaterCouncil.Web.Data
                 .WithMany()
                 .HasForeignKey(l => l.LinkedRepeaterId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Repeater>()
+                .HasOne(r => r.Trustee)
+                .WithMany()
+                .HasForeignKey(r => r.TrusteeId)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

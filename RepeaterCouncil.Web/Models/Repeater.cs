@@ -14,6 +14,12 @@ namespace RepeaterCouncil.Web.Models
 
         public string Callsign { get; set; }
 
+        [Display(Name = "Trustee")]
+        public string? TrusteeId { get; set; }
+
+        [Display(Name = "Trustee")]
+        public ApplicationUser? Trustee { get; set; }
+
         public RepeaterType Type { get; set; }
 
         public RepeaterStatus Status { get; set; } // from code table
