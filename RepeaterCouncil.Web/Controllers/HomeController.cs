@@ -50,7 +50,8 @@ public class HomeController : Controller
 
     public IActionResult About()
     {
-        return View();
+        var tenant = (Tenant)HttpContext.Items["Tenant"]!;
+        return View(tenant);
     }
 
     public IActionResult Procedures()

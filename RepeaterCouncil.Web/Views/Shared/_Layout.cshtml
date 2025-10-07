@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/RepeaterCouncil.Web.styles.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
     <header>
@@ -37,6 +38,7 @@
                             <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Procedures">Procedures</a>
                         </div>
                         <partial name="_SiteAdministratorPartial" />
+                        <partial name="_TenantCoordinatorPartial" />
                         <partial name="_LoginPartial" />
                     </div>
                 </div>

@@ -1,0 +1,81 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/RepeaterCouncil.Web/RepeaterCouncil.Web.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "publish",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "publish",
+                "${workspaceFolder}/RepeaterCouncil.Web/RepeaterCouncil.Web.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "watch",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "watch",
+                "run",
+                "--project",
+                "${workspaceFolder}/RepeaterCouncil.Web/RepeaterCouncil.Web.csproj"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "ef-migrations-add",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "ef",
+                "migrations",
+                "add",
+                "${input:migrationName}",
+                "--project",
+                "${workspaceFolder}/RepeaterCouncil.Web/RepeaterCouncil.Web.csproj"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/RepeaterCouncil.Web"
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "ef-database-update",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "ef",
+                "database",
+                "update",
+                "--project",
+                "${workspaceFolder}/RepeaterCouncil.Web/RepeaterCouncil.Web.csproj"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/RepeaterCouncil.Web"
+            },
+            "problemMatcher": "$msCompile"
+        }
+    ],
+    "inputs": [
+        {
+            "id": "migrationName",
+            "type": "promptString",
+            "description": "Enter migration name"
+        }
+    ]
+}

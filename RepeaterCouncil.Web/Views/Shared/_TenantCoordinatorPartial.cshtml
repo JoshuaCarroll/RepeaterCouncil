@@ -1,0 +1,22 @@
+@if (User.IsInRole("TenantCoordinator"))
+{
+    <div class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="tenantAdminMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Manage
+        </a>
+        <div class="dropdown-menu" aria-labelledby="tenantAdminMenu">
+            <div><a class="dropdown-item" asp-controller="TenantContent" asp-action="Index">
+                <i class="fas fa-edit me-2"></i>Content Management
+            </a></div>
+            <div><a class="dropdown-item" asp-controller="Repeaters" asp-action="Index">
+                <i class="fas fa-broadcast-tower me-2"></i>Repeaters
+            </a></div>
+            <div><a class="dropdown-item" asp-controller="CoordinationRules" asp-action="Index">
+                <i class="fas fa-rules me-2"></i>Coordination Rules
+            </a></div>
+            <div><a class="dropdown-item" asp-controller="Users" asp-action="Index">
+                <i class="fas fa-users me-2"></i>Users
+            </a></div>
+        </div>
+    </div>
+}

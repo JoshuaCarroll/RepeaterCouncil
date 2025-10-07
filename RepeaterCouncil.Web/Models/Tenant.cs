@@ -15,6 +15,9 @@ namespace RepeaterCouncil.Web.Models
             ErrorMessage = "URL must be a valid URL part or domain (e.g. arkansasrepeatercouncil.org or al.repeatercouncil.org)")]
         public string Url { get; set; }
 
+        [Display(Name = "About Us Content")]
+        public string? AboutUsContent { get; set; }
+
         [BindNever]
         public ICollection<Repeater> Repeaters { get; set; } = new List<Repeater>();
 
