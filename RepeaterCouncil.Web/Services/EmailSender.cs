@@ -68,7 +68,7 @@ namespace RepeaterCouncil.Web.Services
             var response = await client.SendEmailAsync(message);
             if (!response.IsSuccessStatusCode)
             {
-                // Perhaps log the error or notify someone?
+                // TODO: Log this error and notify someone
             }
         }
 
