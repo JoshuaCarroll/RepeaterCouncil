@@ -17,9 +17,17 @@
         </div>
     </div>
 
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
     <form asp-action="EditAboutUs">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        
+
         <input type="hidden" asp-for="Id" />
         <input type="hidden" asp-for="Name" />
         <input type="hidden" asp-for="Url" />
@@ -33,10 +41,12 @@
             <div class="card-body">
                 <div class="mb-3">
                     <label asp-for="AboutUsContent" class="form-label">Content</label>
-                    <textarea asp-for="AboutUsContent" class="form-control" id="aboutUsEditor" rows="15">@Model.AboutUsContent</textarea>
+                    <textarea asp-for="AboutUsContent" class="form-control" id="aboutUsEditor" name="AboutUsContent"
+                        rows="15">@Model.AboutUsContent</textarea>
                     <span asp-validation-for="AboutUsContent" class="text-danger"></span>
                     <div class="form-text">
-                        Use the editor above to format your About Us content. You can add links, images, and formatting as needed.
+                        Use the editor above to format your About Us content. You can add links, images, and formatting
+                        as needed.
                     </div>
                 </div>
             </div>
@@ -56,11 +66,14 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
     <!-- TinyMCE CDN -->
-    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
-    
+    <script src="https://cdn.tiny.cloud/1/2bkkhg8euqblwujucuv1t8d3d3sxhoj4obbp7a0361mb301c/tinymce/7/tinymce.min.js"
+        referrerpolicy="origin"></script>
+
     <script>
         tinymce.init({
             selector: '#aboutUsEditor',
@@ -89,9 +102,9 @@
                 });
             }
         });
-        
+
         // Ensure TinyMCE content is saved before form submission
-        document.querySelector('form').addEventListener('submit', function() {
+        document.querySelector('form').addEventListener('submit', function () {
             tinymce.triggerSave();
         });
     </script>
