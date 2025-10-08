@@ -3,6 +3,7 @@ using SendGrid;
 using HtmlAgilityPack;
 using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.IdentityModel.Tokens;
+using RepeaterCouncil.Web.Models;
 
 namespace RepeaterCouncil.Web.Services
 {
@@ -13,16 +14,19 @@ namespace RepeaterCouncil.Web.Services
         Task SendEmailAsync(List<EmailAddress> to, string subject, string htmlMessage);
         Task SendEmailAsync(SendGridMessage sendGridMessage);
         Task SendTemplateEmailAsync(List<string> emails, string subject, string templateId, object dynamicTemplateData);
+        Task<string> SendTemplateEmailAsync<TModel>(string email, string templateName, TModel model);
     }
 
     public class EmailSender : IEmailSender
     {
         private readonly IConfiguration _configuration;
+        private readonly IEmailTemplateService _emailTemplateService;
         private EmailAddress fromEmailAddress;
 
-        public EmailSender(IConfiguration configuration)
+        public EmailSender(IConfiguration configuration, IEmailTemplateService emailTemplateService)
         {
             _configuration = configuration;
+            _emailTemplateService = emailTemplateService;
 
             string? _sendGridApiKey = _configuration["SendGridApiKey"];
             string? _sendGridSenderEmail = _configuration["SendGridSenderEmail"];
@@ -54,7 +58,7 @@ namespace RepeaterCouncil.Web.Services
             var responseBody = await response.Body.ReadAsStringAsync();
             if (!response.IsSuccessStatusCode)
             {
-                // Perhaps tell someone?
+                // TODO: Perhaps tell someone?
             }
         }
 
@@ -94,6 +98,21 @@ namespace RepeaterCouncil.Web.Services
             var from = fromEmailAddress;
             var msg = MailHelper.CreateSingleEmailToMultipleRecipients(from, to, subject, string.Empty, htmlMessage);
             await SendEmailAsync(msg);
+        }
+
+        public async Task<string> SendTemplateEmailAsync<TModel>(string email, string templateName, TModel model)
+        {
+            var htmlContent = await _emailTemplateService.RenderTemplateAsync(templateName, model);
+
+            // Extract subject from the model if it has a Subject property
+            var subject = "Email from Repeater Council";
+            if (model is EmailConfirmationViewModel emailModel)
+            {
+                subject = emailModel.Subject;
+            }
+
+            await SendEmailAsync(email, subject, htmlContent);
+            return htmlContent;
         }
     }
 }

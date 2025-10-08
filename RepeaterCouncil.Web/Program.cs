@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using RepeaterCouncil.Web.Data;
 using RepeaterCouncil.Web.Middleware;
@@ -12,7 +13,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 {
-    options.SignIn.RequireConfirmedAccount = false;
+    options.SignIn.RequireConfirmedAccount = true; // Require email confirmation
+    options.User.RequireUniqueEmail = true;
+    options.Password.RequiredLength = 8;
+    options.Password.RequireDigit = true;
+    options.Password.RequireNonAlphanumeric = false;
 })
 .AddRoles<IdentityRole>()
 .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -32,10 +37,13 @@ builder.Services.AddAuthentication()
 // Register the QrzAuthService as a singleton
 builder.Services.AddHttpClient<QrzAuthService>();
 
+// Register the EmailSender and EmailTemplate services
+builder.Services.AddTransient<IEmailTemplateService, EmailTemplateService>();
+builder.Services.AddTransient<Microsoft.AspNetCore.Identity.UI.Services.IEmailSender, EmailSender>();
+builder.Services.AddTransient<RepeaterCouncil.Web.Services.IEmailSender, EmailSender>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 var app = builder.Build();
 

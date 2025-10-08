@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using RepeaterCouncil.Web.Helpers;
 using RepeaterCouncil.Web.Models;
+using RepeaterCouncil.Web.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -30,14 +31,14 @@ namespace RepeaterCouncil.Web.Areas.Identity.Pages.Account
         private readonly IUserStore<ApplicationUser> _userStore;
         private readonly IUserEmailStore<ApplicationUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
-        private readonly IEmailSender _emailSender;
+        private readonly RepeaterCouncil.Web.Services.IEmailSender _emailSender;
 
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            RepeaterCouncil.Web.Services.IEmailSender emailSender)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -145,8 +146,18 @@ namespace RepeaterCouncil.Web.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    var tenantName = HttpContext.Items["TenantName"]?.ToString() ?? "Repeater Council";
+
+                    var emailModel = new EmailConfirmationViewModel
+                    {
+                        TenantName = tenantName,
+                        FullName = Input.Fullname,
+                        Email = Input.Email,
+                        CallbackUrl = callbackUrl,
+                        Subject = $"Welcome to {tenantName} - Please Confirm Your Email"
+                    };
+
+                    await _emailSender.SendTemplateEmailAsync(Input.Email, "EmailConfirmation", emailModel);
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
