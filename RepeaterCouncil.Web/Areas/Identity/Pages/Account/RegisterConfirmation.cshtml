@@ -1,0 +1,52 @@
+@page
+@model RegisterConfirmationModel
+@{
+    ViewData["Title"] = "Register confirmation";
+}
+
+<h1>@ViewData["Title"]</h1>
+@{
+    if (@Model.DisplayConfirmAccountLink)
+    {
+<p>
+    This app does not currently have a real email sender registered, see <a href="https://aka.ms/aspaccountconf">these docs</a> for how to configure a real email sender.
+    Normally this would be emailed: <a id="confirm-link" href="@Model.EmailConfirmationUrl">Click here to confirm your account</a>
+</p>
+    }
+    else
+    {
+<div class="alert alert-info" role="alert">
+    <h4 class="alert-heading">📧 Check Your Email</h4>
+    <p>We've sent a confirmation email to <strong>@Model.Email</strong>.</p>
+    <p>Please check your email and click the confirmation link to activate your account.</p>
+    <hr>
+    <p class="mb-0">Don't forget to check your spam/junk folder if you don't see the email within a few minutes.</p>
+</div>
+
+<div class="card mt-4">
+    <div class="card-body">
+        <h5 class="card-title">What's Next?</h5>
+        <ol class="card-text">
+            <li>Check your email inbox for a message from us</li>
+            <li>Click the "Confirm Email Address" button in the email</li>
+            <li>Complete your account activation</li>
+            <li>Log in and start using our repeater coordination system</li>
+        </ol>
+    </div>
+</div>
+
+<div class="mt-4">
+    <p><strong>Having trouble?</strong></p>
+    <ul>
+        <li>Make sure you entered the correct email address</li>
+        <li>Check your spam/junk folder</li>
+        <li>Wait a few minutes - emails can sometimes be delayed</li>
+        <li>Contact your repeater coordinator if you need assistance</li>
+    </ul>
+</div>
+
+<p class="mt-4">
+    <a asp-page="./Login" class="btn btn-outline-primary">Back to Login</a>
+</p>
+    }
+}

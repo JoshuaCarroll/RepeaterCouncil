@@ -13,8 +13,8 @@ Used for user registration email confirmation.
 ### PasswordReset.cshtml
 Used for password reset requests.
 - **Model:** `PasswordResetViewModel`
-- **Usage:** Password reset flow
-- **Features:** Security warnings, reset button, expiration notice
+- **Usage:** Forgot password flow (`/Account/ForgotPassword`)
+- **Features:** Security warnings, reset button, expiration notice, professional red theme
 
 ### Welcome.cshtml
 Used for welcoming new users after email confirmation.

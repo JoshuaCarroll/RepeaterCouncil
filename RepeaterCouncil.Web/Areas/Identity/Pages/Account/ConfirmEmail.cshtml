@@ -1,0 +1,42 @@
+@page
+@model ConfirmEmailModel
+@{
+    ViewData["Title"] = "Confirm email";
+}
+
+<h1>@ViewData["Title"]</h1>
+<div>
+    <p>
+        @Model.StatusMessage
+    </p>
+    @if (Model.StatusMessage.Contains("Thank you"))
+    {
+        <div class="alert alert-success" role="alert">
+            <h4 class="alert-heading">🎉 Account Activated!</h4>
+            <p>Your email has been successfully confirmed and your account is now active.</p>
+            <p>We've also sent you a welcome email with important information about your new account.</p>
+            <hr>
+            <p class="mb-0">You can now log in and start using our repeater coordination system.</p>
+        </div>
+        <p>
+            <a asp-page="./Login" class="btn btn-primary">Log In to Your Account</a>
+        </p>
+    }
+    else
+    {
+        <div class="alert alert-danger" role="alert">
+            <h4 class="alert-heading">⚠️ Confirmation Failed</h4>
+            <p>There was an error confirming your email address. This could be due to:</p>
+            <ul>
+                <li>An expired confirmation link</li>
+                <li>A malformed or incomplete link</li>
+                <li>An account that has already been confirmed</li>
+            </ul>
+            <p class="mb-0">Please try registering again or contact your repeater coordinator for assistance.</p>
+        </div>
+        <p>
+            <a asp-page="./Register" class="btn btn-primary">Register Again</a>
+            <a asp-page="./Login" class="btn btn-outline-secondary">Try to Log In</a>
+        </p>
+    }
+</div>

@@ -20,10 +20,10 @@ namespace RepeaterCouncil.Web.Services
     public class EmailSender : IEmailSender
     {
         private readonly IConfiguration _configuration;
-        private readonly IEmailTemplateService _emailTemplateService;
+        private readonly ISimpleEmailTemplateService _emailTemplateService;
         private EmailAddress fromEmailAddress;
 
-        public EmailSender(IConfiguration configuration, IEmailTemplateService emailTemplateService)
+        public EmailSender(IConfiguration configuration, ISimpleEmailTemplateService emailTemplateService)
         {
             _configuration = configuration;
             _emailTemplateService = emailTemplateService;
@@ -109,6 +109,18 @@ namespace RepeaterCouncil.Web.Services
             if (model is EmailConfirmationViewModel emailModel)
             {
                 subject = emailModel.Subject;
+            }
+            else if (model is PasswordResetViewModel passwordResetModel)
+            {
+                subject = passwordResetModel.Subject;
+            }
+            else if (model is WelcomeEmailViewModel welcomeModel)
+            {
+                subject = welcomeModel.Subject;
+            }
+            else if (model is AnnouncementEmailViewModel announcementModel)
+            {
+                subject = announcementModel.Subject;
             }
 
             await SendEmailAsync(email, subject, htmlContent);

@@ -31,16 +31,25 @@ namespace RepeaterCouncil.Web.Services
 
         public async Task<string> RenderTemplateAsync<TModel>(string templateName, TModel model)
         {
+            System.Diagnostics.Debug.WriteLine($"EmailTemplateService: Attempting to render template '{templateName}'");
+
             var httpContext = new DefaultHttpContext { RequestServices = _serviceProvider };
             var actionContext = new ActionContext(httpContext, new RouteData(), new ActionDescriptor());
 
-            var viewName = $"~/EmailTemplates/{templateName}.cshtml";
-            var viewResult = _razorViewEngine.FindView(actionContext, viewName, false);
+            // Try with just the template name since we have a view location expander
+            System.Diagnostics.Debug.WriteLine($"EmailTemplateService: Searching for view '{templateName}'");
+            var viewResult = _razorViewEngine.FindView(actionContext, templateName, false);
 
             if (!viewResult.Success)
             {
-                throw new ArgumentNullException($"A view with the name {viewName} could not be found");
+                var searchedLocations = viewResult.SearchedLocations != null
+                    ? string.Join(", ", viewResult.SearchedLocations)
+                    : "No locations searched";
+                System.Diagnostics.Debug.WriteLine($"EmailTemplateService: View not found. Searched locations: {searchedLocations}");
+                throw new ArgumentException($"A view with the name '{templateName}' could not be found. Searched locations: {searchedLocations}");
             }
+
+            System.Diagnostics.Debug.WriteLine($"EmailTemplateService: View '{templateName}' found successfully");
 
             var viewData = new ViewDataDictionary<TModel>(new EmptyModelMetadataProvider(), new ModelStateDictionary())
             {

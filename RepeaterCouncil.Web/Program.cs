@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using RepeaterCouncil.Web.Data;
 using RepeaterCouncil.Web.Middleware;
@@ -38,7 +39,7 @@ builder.Services.AddAuthentication()
 builder.Services.AddHttpClient<QrzAuthService>();
 
 // Register the EmailSender and EmailTemplate services
-builder.Services.AddTransient<IEmailTemplateService, EmailTemplateService>();
+builder.Services.AddTransient<ISimpleEmailTemplateService, SimpleEmailTemplateService>();
 builder.Services.AddTransient<Microsoft.AspNetCore.Identity.UI.Services.IEmailSender, EmailSender>();
 builder.Services.AddTransient<RepeaterCouncil.Web.Services.IEmailSender, EmailSender>();
 
@@ -60,6 +61,8 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication();
+app.UseMiddleware<EmailConfirmationMiddleware>();
 app.UseAuthorization();
 
 app.MapStaticAssets();
