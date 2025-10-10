@@ -43,6 +43,9 @@ builder.Services.AddTransient<ISimpleEmailTemplateService, SimpleEmailTemplateSe
 builder.Services.AddTransient<Microsoft.AspNetCore.Identity.UI.Services.IEmailSender, EmailSender>();
 builder.Services.AddTransient<RepeaterCouncil.Web.Services.IEmailSender, EmailSender>();
 
+// Register the Legacy Data Migration Service
+builder.Services.AddTransient<LegacyDataMigrationService>();
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 

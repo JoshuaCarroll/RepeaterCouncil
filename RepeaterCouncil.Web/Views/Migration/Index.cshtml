@@ -1,0 +1,156 @@
+@{
+    ViewData["Title"] = "Legacy Data Migration";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="display-4">Legacy Data Migration</h1>
+            <p class="lead">Migrate data from the legacy RepeaterCouncil database to the new multi-tenant structure.</p>
+
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>
+                    @Html.Raw(TempData["SuccessMessage"])
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    @Html.Raw(TempData["ErrorMessage"])
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            @if (TempData["ValidationResults"] != null)
+            {
+                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Validation Results:</strong><br />
+                    @Html.Raw(TempData["ValidationResults"])
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-database me-2"></i>Migration Process
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning" role="alert">
+                        <h6 class="alert-heading">
+                            <i class="fas fa-exclamation-triangle me-2"></i>Important Notes
+                        </h6>
+                        <ul class="mb-0">
+                            <li><strong>Backup your database</strong> before running the migration</li>
+                            <li>This process will create new tenants based on state mappings</li>
+                            <li>All legacy users will need to reset their passwords</li>
+                            <li>The migration may take several minutes depending on data size</li>
+                            <li>Ensure the legacy database connection string is configured in appsettings.json</li>
+                        </ul>
+                    </div>
+
+                    <h6>Migration Steps:</h6>
+                    <ol>
+                        <li><strong>Create Tenants</strong> - Based on state mappings from legacy data</li>
+                        <li><strong>Migrate Users</strong> - Convert legacy users to ASP.NET Identity users</li>
+                        <li><strong>Migrate Repeaters</strong> - Transfer repeater data with tenant assignments</li>
+                        <li><strong>Migrate Links</strong> - Transfer repeater link relationships</li>
+                        <li><strong>Migrate Notes</strong> - Convert change logs to repeater notes</li>
+                        <li><strong>Create Rules</strong> - Generate default coordination rules for each tenant</li>
+                    </ol>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-start mt-4">
+                        <form asp-action="StartMigration" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-primary btn-lg me-2"
+                                onclick="return confirm('Are you sure you want to start the migration? This process cannot be undone.')">
+                                <i class="fas fa-play me-2"></i>Start Migration
+                            </button>
+                        </form>
+
+                        <form asp-action="ValidateData" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-outline-info btn-lg">
+                                <i class="fas fa-check-double me-2"></i>Validate Data
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-cog me-2"></i>Configuration
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <h6>Required Configuration:</h6>
+                    <ul>
+                        <li>
+                            <strong>Connection String</strong><br />
+                            <code>LegacyRepeaterData</code> in appsettings.json
+                        </li>
+                        <li>
+                            <strong>Tenant Mappings</strong><br />
+                            Configured in controller (Arkansas, Alabama, etc.)
+                        </li>
+                        <li>
+                            <strong>Permissions</strong><br />
+                            Site Administrator role required
+                        </li>
+                    </ul>
+
+                    <h6 class="mt-3">Data Mapping:</h6>
+                    <ul>
+                        <li>Legacy States → Tenants</li>
+                        <li>Legacy Users → AspNetUsers</li>
+                        <li>Legacy Types/Statuses → Enums</li>
+                        <li>RepeaterChangeLogs → RepeaterNotes</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-file-code me-2"></i>Migration Files
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p>The migration includes these components:</p>
+                    <ul>
+                        <li><code>LegacyDataMigration.sql</code> - SQL migration script</li>
+                        <li><code>LegacyDataMigrationService.cs</code> - C# service class</li>
+                        <li><code>MigrationController.cs</code> - Admin controller</li>
+                    </ul>
+
+                    <div class="alert alert-light mt-3" role="alert">
+                        <small>
+                            <i class="fas fa-lightbulb me-1"></i>
+                            <strong>Tip:</strong> Review the tenant mappings in the controller
+                            before running the migration to ensure they match your requirements.
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Add any client-side validation or progress indicators here
+    </script>
+}
