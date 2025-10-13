@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NetTopologySuite.Geometries;
 using RepeaterCouncil.Web.Data;
 using RepeaterCouncil.Web.Enums;
 using RepeaterCouncil.Web.Models;
@@ -23,12 +24,12 @@ public class HomeController : Controller
     {
         var tenant = (Tenant)HttpContext.Items["Tenant"]!;
         var tenantName = (string)HttpContext.Items["TenantName"]!;
-        
+
         // Count active repeaters (Operational, Under Construction, Temporarily Offline)
         var activeRepeaterCount = _context.Repeaters
-            .Where(r => r.TenantId == tenant.Id && 
-                   (r.Status == RepeaterStatus.Operational || 
-                    r.Status == RepeaterStatus.UnderConstruction || 
+            .Where(r => r.TenantId == tenant.Id &&
+                   (r.Status == RepeaterStatus.Operational ||
+                    r.Status == RepeaterStatus.UnderConstruction ||
                     r.Status == RepeaterStatus.TemporarilyOffline))
             .Count();
 
@@ -63,7 +64,7 @@ public class HomeController : Controller
     {
         var tenant = (Tenant)HttpContext.Items["Tenant"]!;
         var tenantName = (string)HttpContext.Items["TenantName"]!;
-        
+
         var viewModel = new RepeaterSearchViewModel
         {
             SearchTerm = searchTerm,
@@ -96,18 +97,22 @@ public class HomeController : Controller
                     query = query.Where(r => r.City.Contains(searchTerm));
                     break;
                 case "callsign":
-                    query = query.Where(r => r.Callsign.Contains(searchTerm) || 
+                    query = query.Where(r => r.Callsign.Contains(searchTerm) ||
                                            (r.Trustee != null && r.Trustee.Callsign.Contains(searchTerm)));
                     break;
                 case "coordinates":
                     if (latitude.HasValue && longitude.HasValue && searchRadius.HasValue)
                     {
-                        // Simple coordinate-based search (for more precise geographic search, consider using PostGIS or similar)
-                        var latRange = searchRadius.Value / 69.0; // Approximate miles to degrees
-                        var lonRange = searchRadius.Value / (69.0 * Math.Cos(latitude.Value * Math.PI / 180.0));
-                        
-                        query = query.Where(r => Math.Abs(r.Latitude - latitude.Value) <= latRange &&
-                                               Math.Abs(r.Longitude - longitude.Value) <= lonRange);
+                        // Create a point for the search location (longitude first, then latitude)
+                        var geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
+                        var searchPoint = geometryFactory.CreatePoint(new Coordinate(longitude.Value, latitude.Value));
+
+                        // Convert search radius from miles to meters (1 mile = 1609.34 meters)
+                        var searchRadiusMeters = searchRadius.Value * 1609.34;
+
+                        // Use spatial distance query - filter repeaters with non-null locations within the search radius
+                        query = query.Where(r => r.Location != null &&
+                                               r.Location.Distance(searchPoint) <= searchRadiusMeters);
                     }
                     break;
             }

@@ -47,16 +47,18 @@
             @Html.DisplayFor(model => model.SiteDescription)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Latitude)
+            @Html.DisplayNameFor(model => model.Location)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Latitude)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Longitude)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Longitude)
+            @if (Model.Location != null)
+            {
+                <span>@Model.Location.Y.ToString("F6"), @Model.Location.X.ToString("F6")</span>
+                <small class="text-muted">(Latitude, Longitude)</small>
+            }
+            else
+            {
+                <span class="text-muted">No location data</span>
+            }
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.AltitudeMeters)

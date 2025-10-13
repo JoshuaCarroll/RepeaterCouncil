@@ -10,7 +10,8 @@ using RepeaterCouncil.Web.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("RepeaterData3")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("RepeaterData3"),
+        x => x.UseNetTopologySuite()));
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 {

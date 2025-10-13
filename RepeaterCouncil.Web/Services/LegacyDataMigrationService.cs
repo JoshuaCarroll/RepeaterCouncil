@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using NetTopologySuite.Geometries;
 using RepeaterCouncil.Web.Data;
 using RepeaterCouncil.Web.Enums;
 using RepeaterCouncil.Web.Models;
@@ -91,6 +92,60 @@ namespace RepeaterCouncil.Web.Services
         }
 
         /// <summary>
+        /// Creates a Point geometry from latitude and longitude coordinates
+        /// Uses SRID 4326 (WGS84) which is the standard for GPS coordinates
+        /// </summary>
+        private Point? CreateLocationPoint(decimal? longitude, decimal? latitude)
+        {
+            if (!longitude.HasValue || !latitude.HasValue ||
+                longitude.Value == 0 && latitude.Value == 0)
+            {
+                return null;
+            }
+
+            // NetTopologySuite expects longitude first, then latitude
+            // SRID 4326 is WGS84 (GPS coordinates)
+            var geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
+            return geometryFactory.CreatePoint(new Coordinate((double)longitude.Value, (double)latitude.Value));
+        }
+
+        /// <summary>
+        /// Loads state border geometry from the legacy States table if available
+        /// Returns null if no border data found or if there's an error
+        /// </summary>
+        private async Task<Geometry?> LoadStateBorderAsync(string stateAbbreviation)
+        {
+            try
+            {
+                using var connection = new SqlConnection(_legacyConnectionString);
+                await connection.OpenAsync();
+
+                var sql = @"
+                    SELECT StateGeography 
+                    FROM States 
+                    WHERE Abbr = @stateAbbr AND StateGeography IS NOT NULL";
+
+                using var command = new SqlCommand(sql, connection);
+                command.Parameters.AddWithValue("@stateAbbr", stateAbbreviation);
+
+                var result = await command.ExecuteScalarAsync();
+                if (result != null && result != DBNull.Value)
+                {
+                    // Convert SQL Server geography to NetTopologySuite geometry
+                    // This assumes the legacy data is stored as SQL Server geography type
+                    return result as Geometry;
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning($"Could not load border data for state {stateAbbreviation}: {ex.Message}");
+                return null;
+            }
+        }
+
+        /// <summary>
         /// Performs complete migration from legacy database
         /// </summary>
         /// <param name="tenantMappings">Dictionary mapping legacy state abbreviations to tenant URLs</param>
@@ -148,28 +203,45 @@ namespace RepeaterCouncil.Web.Services
                 if (existingTenant == null)
                 {
                     var stateName = GetFullStateName(mapping.Key);
+                    var borders = await LoadStateBorderAsync(mapping.Key);
+
                     var tenant = new Tenant
                     {
                         Name = $"{stateName} Repeater Council",
                         Url = mapping.Value,
-                        AboutUsContent = $"Welcome to the {stateName} Repeater Council coordination system."
+                        AboutUsContent = $"Welcome to the {stateName} Repeater Council coordination system.",
+                        Borders = borders
                     };
 
                     _context.Tenants.Add(tenant);
                     created++;
-                    _logger.LogInformation($"Created tenant for {stateName} ({mapping.Key})");
+                    _logger.LogInformation($"Created tenant for {stateName} ({mapping.Key}){(borders != null ? " with border data" : "")}");
                 }
                 else
                 {
                     // Update existing tenant if needed
                     var stateName = GetFullStateName(mapping.Key);
                     var expectedName = $"{stateName} Repeater Council";
+                    var borders = await LoadStateBorderAsync(mapping.Key);
+
+                    bool needsUpdate = false;
                     if (existingTenant.Name != expectedName)
                     {
                         existingTenant.Name = expectedName;
                         existingTenant.AboutUsContent = $"Welcome to the {stateName} Repeater Council coordination system.";
+                        needsUpdate = true;
+                    }
+
+                    if (existingTenant.Borders == null && borders != null)
+                    {
+                        existingTenant.Borders = borders;
+                        needsUpdate = true;
+                    }
+
+                    if (needsUpdate)
+                    {
                         updated++;
-                        _logger.LogInformation($"Updated tenant for {stateName} ({mapping.Key})");
+                        _logger.LogInformation($"Updated tenant for {stateName} ({mapping.Key}){(borders != null ? " with border data" : "")}");
                     }
                 }
             }
@@ -395,8 +467,7 @@ namespace RepeaterCouncil.Web.Services
                     Status = MapRepeaterStatus(legacyRepeater.Status),
                     City = legacyRepeater.City ?? string.Empty,
                     SiteDescription = legacyRepeater.SiteName ?? string.Empty,
-                    Latitude = (double)(legacyRepeater._Latitude ?? 0),
-                    Longitude = (double)(legacyRepeater._Longitude ?? 0),
+                    Location = CreateLocationPoint(legacyRepeater._Longitude, legacyRepeater._Latitude),
                     AltitudeMeters = (double)(legacyRepeater.AMSL ?? 0),
                     OutputPowerWatts = legacyRepeater.OutputPower ?? 0,
                     EffectiveRadiatedPower = (double)(legacyRepeater.ERP ?? 0),
@@ -655,8 +726,7 @@ namespace RepeaterCouncil.Web.Services
             existingRepeater.Status = MapRepeaterStatus(legacyRepeater.Status);
             existingRepeater.City = legacyRepeater.City ?? string.Empty;
             existingRepeater.SiteDescription = legacyRepeater.SiteName ?? string.Empty;
-            existingRepeater.Latitude = (double)(legacyRepeater._Latitude ?? 0);
-            existingRepeater.Longitude = (double)(legacyRepeater._Longitude ?? 0);
+            existingRepeater.Location = CreateLocationPoint(legacyRepeater._Longitude, legacyRepeater._Latitude);
             existingRepeater.AltitudeMeters = (double)(legacyRepeater.AMSL ?? 0);
             existingRepeater.OutputPowerWatts = legacyRepeater.OutputPower ?? 0;
             existingRepeater.EffectiveRadiatedPower = (double)(legacyRepeater.ERP ?? 0);

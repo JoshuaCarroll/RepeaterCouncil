@@ -29,6 +29,15 @@ namespace RepeaterCouncil.Web.Data
                 .WithMany()
                 .HasForeignKey(r => r.TrusteeId)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            // Configure spatial data types
+            modelBuilder.Entity<Tenant>()
+                .Property(t => t.Borders)
+                .HasColumnType("geography");
+
+            modelBuilder.Entity<Repeater>()
+                .Property(r => r.Location)
+                .HasColumnType("geography");
         }
     }
 }

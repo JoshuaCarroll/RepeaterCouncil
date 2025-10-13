@@ -1,5 +1,7 @@
 ﻿using RepeaterCouncil.Web.Enums;
+using NetTopologySuite.Geometries;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RepeaterCouncil.Web.Models
 {
@@ -12,7 +14,7 @@ namespace RepeaterCouncil.Web.Models
 
         public Tenant? Tenant { get; set; } = null;
 
-        public string Callsign { get; set; }
+        public required string Callsign { get; set; }
 
         [Display(Name = "Trustee")]
         public string? TrusteeId { get; set; }
@@ -24,14 +26,56 @@ namespace RepeaterCouncil.Web.Models
 
         public RepeaterStatus Status { get; set; } // from code table
 
-        public string City { get; set; }
+        public required string City { get; set; }
 
         [Display(Name = "Location Description")]
         public string SiteDescription { get; set; } = "";
 
-        public double Latitude { get; set; }
+        [Display(Name = "Location")]
+        public Point? Location { get; set; }
 
-        public double Longitude { get; set; }
+        // Helper properties for form binding - not mapped to database
+        [NotMapped]
+        [Display(Name = "Latitude (decimal degrees)")]
+        [Range(-90.0, 90.0, ErrorMessage = "Latitude must be between -90 and 90")]
+        public double Latitude
+        {
+            get => Location?.Y ?? 0.0;
+            set
+            {
+                if (Location == null && (value != 0.0 || Longitude != 0.0))
+                {
+                    var geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
+                    Location = geometryFactory.CreatePoint(new Coordinate(Longitude, value));
+                }
+                else if (Location != null)
+                {
+                    var geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
+                    Location = geometryFactory.CreatePoint(new Coordinate(Location.X, value));
+                }
+            }
+        }
+
+        [NotMapped]
+        [Display(Name = "Longitude (decimal degrees)")]
+        [Range(-180.0, 180.0, ErrorMessage = "Longitude must be between -180 and 180")]
+        public double Longitude
+        {
+            get => Location?.X ?? 0.0;
+            set
+            {
+                if (Location == null && (Latitude != 0.0 || value != 0.0))
+                {
+                    var geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
+                    Location = geometryFactory.CreatePoint(new Coordinate(value, Latitude));
+                }
+                else if (Location != null)
+                {
+                    var geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
+                    Location = geometryFactory.CreatePoint(new Coordinate(value, Location.Y));
+                }
+            }
+        }
 
         [Display(Name = "Altitude (meters)")]
         public double AltitudeMeters { get; set; }
@@ -67,7 +111,7 @@ namespace RepeaterCouncil.Web.Models
         public double? OutputToneValue { get; set; }
 
         [Display(Name = "Analog Bandwidth (kHz)")]
-        public string AnalogBandwidth { get; set; }
+        public required string AnalogBandwidth { get; set; }
 
         [Display(Name = "Date Coordinated")]
         public DateTime DateCoordinated { get; set; }
