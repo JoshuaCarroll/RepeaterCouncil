@@ -1,0 +1,65 @@
+@model RepeaterCouncil.Web.Models.WelcomeEmailViewModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@Model.Subject</title>
+</head>
+
+<body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333;'>
+    <div style='max-width: 600px; margin: 0 auto; padding: 20px;'>
+        <h2 style='color: #28a745;'>Welcome to @Model.TenantName!</h2>
+
+        <p>Hello <strong>@Model.FullName</strong> (@Model.Callsign),</p>
+
+        <p>Your account has been successfully activated! We're excited to welcome you to the @Model.TenantName
+            community.</p>
+
+        <div
+            style='background-color: #d4edda; border: 1px solid #c3e6cb; color: #155724; padding: 20px; border-radius: 5px; margin: 20px 0;'>
+            <h3 style='margin-top: 0; color: #155724;'>🎉 Account Details</h3>
+            <ul style='margin-bottom: 0;'>
+                <li><strong>Callsign:</strong> @Model.Callsign</li>
+                <li><strong>Email:</strong> @Model.Email</li>
+                <li><strong>Member Since:</strong> @Model.ActivationDate</li>
+            </ul>
+        </div>
+
+        <p>As a member of @Model.TenantName, you now have access to:</p>
+        <ul>
+            <li>Browse our repeater directory</li>
+            <li>Submit repeater coordination requests</li>
+            <li>View repeater technical details and coverage maps</li>
+            <li>Access member-only resources and coordination guidelines</li>
+        </ul>
+
+        <div style='text-align: center; margin: 30px 0;'>
+            <a href='@Model.LoginUrl'
+                style='display: inline-block; padding: 12px 30px; background-color: #28a745; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;'>
+                Access Your Account
+            </a>
+        </div>
+
+        <hr style='margin: 30px 0; border: none; border-top: 1px solid #eee;'>
+
+        <p style='font-size: 12px; color: #6c757d;'>
+            This welcome email was sent to <strong>@Model.Email</strong> for your @Model.TenantName account.
+            <br>If you have any questions, please contact your repeater coordinator.
+        </p>
+
+        <p style='font-size: 12px; color: #6c757d;'>
+            <strong>@Model.TenantName</strong><br>
+            Amateur Radio Repeater Coordination<br>
+            73!
+        </p>
+    </div>
+</body>
+
+</html>

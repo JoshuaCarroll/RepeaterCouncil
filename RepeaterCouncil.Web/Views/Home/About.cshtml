@@ -1,0 +1,66 @@
+﻿@model RepeaterCouncil.Web.Models.Tenant
+@{
+    ViewData["Title"] = "About Us";
+    var TenantName = Context.Items["TenantName"]!.ToString();
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h1 class="display-4 mb-4">About @TenantName</h1>
+            
+            @if (!string.IsNullOrEmpty(Model?.AboutUsContent))
+            {
+                <div class="about-us-content">
+                    @Html.Raw(Model.AboutUsContent)
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Content Coming Soon!</strong>
+                    <p class="mb-0 mt-2">
+                        We're working on updating our About Us page. Please check back soon for more information about @TenantName.
+                    </p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .about-us-content {
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+        
+        .about-us-content h1, .about-us-content h2, .about-us-content h3,
+        .about-us-content h4, .about-us-content h5, .about-us-content h6 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .about-us-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .about-us-content ul, .about-us-content ol {
+            margin-bottom: 1rem;
+        }
+        
+        .about-us-content img {
+            max-width: 100%;
+            height: auto;
+            margin: 1rem 0;
+        }
+        
+        .about-us-content blockquote {
+            border-left: 4px solid #0d6efd;
+            padding-left: 1rem;
+            margin: 1rem 0;
+            color: #6c757d;
+        }
+    </style>
+}

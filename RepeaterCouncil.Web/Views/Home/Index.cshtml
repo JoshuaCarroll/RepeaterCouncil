@@ -1,0 +1,62 @@
+﻿@model RepeaterCouncil.Web.ViewModels.HomeIndexViewModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center mb-5">
+    <h1 class="display-4">@Model.TenantName Repeater Council</h1>
+    <p class="lead">Your repeater council coordinates amateur radio repeater frequencies. We utilize available data from our own database, as well as information from surrounding states. We use our own standards and guidelines, originally based on those of the Mid-America Coordination Council (defunct).</p>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-5">
+    <div class="col-md-4 mb-3">
+        <div class="card bg-primary text-white h-100">
+            <div class="card-body text-center">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2 class="card-title mb-0 display-6">@Model.ActiveRepeaterCount</h2>
+                        <p class="card-text mb-0">Active Coordinated Repeaters</p>
+                    </div>
+                    <div>
+                        <i class="fas fa-broadcast-tower fa-3x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-3">
+        <div class="card bg-success text-white h-100">
+            <div class="card-body text-center">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2 class="card-title mb-0 display-6">@Model.TotalCoordinationsProcessed</h2>
+                        <p class="card-text mb-0">Total Coordinations Processed</p>
+                        <small class="text-white-50">Coming Soon</small>
+                    </div>
+                    <div>
+                        <i class="fas fa-clipboard-check fa-3x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-3">
+        <div class="card bg-info text-white h-100">
+            <div class="card-body text-center">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2 class="card-title mb-0 display-6">@Model.AverageCoordinationTime</h2>
+                        <p class="card-text mb-0">Average Coordination Time</p>
+                        <small class="text-white-50">Coming Soon</small>
+                    </div>
+                    <div>
+                        <i class="fas fa-clock fa-3x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

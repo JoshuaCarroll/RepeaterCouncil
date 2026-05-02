@@ -1,0 +1,270 @@
+﻿@model RepeaterCouncil.Web.ViewModels.RepeaterSearchViewModel
+@{
+    ViewData["Title"] = "Repeater Directory";
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col">
+            <h1 class="display-6">@Model.TenantName Repeater Directory</h1>
+            <p class="lead">Search and browse coordinated repeaters in our system</p>
+        </div>
+    </div>
+
+    <!-- Search Form -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-search me-2"></i>Search Repeaters
+            </h5>
+        </div>
+        <div class="card-body">
+            <form method="get" asp-action="Repeaters">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label for="searchType" class="form-label">Search By</label>
+                        <select class="form-select" name="searchType" id="searchType">
+                            <option value="frequency" selected="@(Model.SearchType == "frequency")">Frequency</option>
+                            <option value="city" selected="@(Model.SearchType == "city")">City</option>
+                            <option value="callsign" selected="@(Model.SearchType == "callsign")">Callsign</option>
+                            <option value="coordinates" selected="@(Model.SearchType == "coordinates")">Coordinates</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-4" id="generalSearchDiv">
+                        <label for="searchTerm" class="form-label" id="searchLabel">Search Term</label>
+                        <input type="text" class="form-control" name="searchTerm" id="searchTerm" 
+                               value="@Model.SearchTerm" placeholder="Enter search term">
+                    </div>
+                    
+                    <div class="col-md-2" id="latitudeDiv" style="display: none;">
+                        <label for="latitude" class="form-label">Latitude</label>
+                        <input type="number" step="any" class="form-control" name="latitude" id="latitude" 
+                               value="@Model.Latitude" placeholder="e.g. 34.7465">
+                    </div>
+                    
+                    <div class="col-md-2" id="longitudeDiv" style="display: none;">
+                        <label for="longitude" class="form-label">Longitude</label>
+                        <input type="number" step="any" class="form-control" name="longitude" id="longitude" 
+                               value="@Model.Longitude" placeholder="e.g. -92.2896">
+                    </div>
+                    
+                    <div class="col-md-2" id="radiusDiv" style="display: none;">
+                        <label for="searchRadius" class="form-label">Radius (miles)</label>
+                        <input type="number" class="form-control" name="searchRadius" id="searchRadius" 
+                               value="@(Model.SearchRadius ?? 25)" min="1" max="100">
+                    </div>
+                    
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-search me-1"></i>Search
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    @if (Model.Results.Any() || !string.IsNullOrEmpty(Model.SearchTerm))
+    {
+        <!-- Results Summary -->
+        <div class="row mb-3">
+            <div class="col">
+                @if (Model.TotalCount > 0)
+                {
+                    <p class="text-muted mb-0">
+                        Showing @((Model.Page - 1) * Model.PageSize + 1) to @Math.Min(Model.Page * Model.PageSize, Model.TotalCount) 
+                        of @Model.TotalCount repeaters
+                        @if (!string.IsNullOrEmpty(Model.SearchTerm))
+                        {
+                            <span>matching "@Model.SearchTerm"</span>
+                        }
+                    </p>
+                }
+                else
+                {
+                    <p class="text-muted mb-0">No repeaters found matching your search criteria.</p>
+                }
+            </div>
+        </div>
+
+        @if (Model.Results.Any())
+        {
+            <!-- Results Table -->
+            <div class="card">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Frequency</th>
+                                    <th>Callsign</th>
+                                    <th>Trustee</th>
+                                    <th>Status</th>
+                                    <th>City</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var repeater in Model.Results)
+                                {
+                                    <tr>
+                                        <td>
+                                            <strong>@repeater.TransmitFreq.ToString("F4") MHz</strong>
+                                        </td>
+                                        <td>
+                                            <a href="https://www.qrz.com/db/@repeater.Callsign" 
+                                               target="_blank" 
+                                               class="text-decoration-none fw-bold">
+                                                @repeater.Callsign
+                                                <i class="fas fa-external-link-alt fa-xs ms-1"></i>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            @if (repeater.Trustee != null)
+                                            {
+                                                <a href="https://www.qrz.com/db/@repeater.Trustee.Callsign" 
+                                                   target="_blank" 
+                                                   class="text-decoration-none">
+                                                    @repeater.Trustee.Callsign
+                                                    <i class="fas fa-external-link-alt fa-xs ms-1"></i>
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">N/A</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-@(GetStatusBadgeColor(repeater.Status))">
+                                                @repeater.Status.GetDisplayName()
+                                            </span>
+                                        </td>
+                                        <td>@repeater.City</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            @if (Model.TotalPages > 1)
+            {
+                <nav aria-label="Repeater search pagination" class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item @(Model.HasPrevious ? "" : "disabled")">
+                            <a class="page-link" 
+                               href="@Url.Action("Repeaters", new { 
+                                   searchTerm = Model.SearchTerm, 
+                                   searchType = Model.SearchType,
+                                   latitude = Model.Latitude,
+                                   longitude = Model.Longitude,
+                                   searchRadius = Model.SearchRadius,
+                                   page = Model.Page - 1 
+                               })">
+                                <i class="fas fa-chevron-left me-1"></i>Previous
+                            </a>
+                        </li>
+
+                        @for (int i = Math.Max(1, Model.Page - 2); i <= Math.Min(Model.TotalPages, Model.Page + 2); i++)
+                        {
+                            <li class="page-item @(i == Model.Page ? "active" : "")">
+                                <a class="page-link" 
+                                   href="@Url.Action("Repeaters", new { 
+                                       searchTerm = Model.SearchTerm, 
+                                       searchType = Model.SearchType,
+                                       latitude = Model.Latitude,
+                                       longitude = Model.Longitude,
+                                       searchRadius = Model.SearchRadius,
+                                       page = i 
+                                   })">
+                                    @i
+                                </a>
+                            </li>
+                        }
+
+                        <li class="page-item @(Model.HasNext ? "" : "disabled")">
+                            <a class="page-link" 
+                               href="@Url.Action("Repeaters", new { 
+                                   searchTerm = Model.SearchTerm, 
+                                   searchType = Model.SearchType,
+                                   latitude = Model.Latitude,
+                                   longitude = Model.Longitude,
+                                   searchRadius = Model.SearchRadius,
+                                   page = Model.Page + 1 
+                               })">
+                                Next<i class="fas fa-chevron-right ms-1"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            }
+        }
+    }
+</div>
+
+@functions {
+    private string GetStatusBadgeColor(RepeaterCouncil.Web.Enums.RepeaterStatus status)
+    {
+        return status switch
+        {
+            RepeaterCouncil.Web.Enums.RepeaterStatus.Operational => "success",
+            RepeaterCouncil.Web.Enums.RepeaterStatus.UnderConstruction => "warning",
+            RepeaterCouncil.Web.Enums.RepeaterStatus.Proposed => "info",
+            RepeaterCouncil.Web.Enums.RepeaterStatus.TemporarilyOffline => "secondary",
+            RepeaterCouncil.Web.Enums.RepeaterStatus.SuspectedOffline => "danger",
+            RepeaterCouncil.Web.Enums.RepeaterStatus.Decoordinated => "dark",
+            _ => "secondary"
+        };
+    }
+}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchTypeSelect = document.getElementById('searchType');
+    const generalSearchDiv = document.getElementById('generalSearchDiv');
+    const latitudeDiv = document.getElementById('latitudeDiv');
+    const longitudeDiv = document.getElementById('longitudeDiv');
+    const radiusDiv = document.getElementById('radiusDiv');
+    const searchLabel = document.getElementById('searchLabel');
+
+    function updateSearchForm() {
+        const searchType = searchTypeSelect.value;
+        
+        if (searchType === 'coordinates') {
+            generalSearchDiv.style.display = 'none';
+            latitudeDiv.style.display = 'block';
+            longitudeDiv.style.display = 'block';
+            radiusDiv.style.display = 'block';
+        } else {
+            generalSearchDiv.style.display = 'block';
+            latitudeDiv.style.display = 'none';
+            longitudeDiv.style.display = 'none';
+            radiusDiv.style.display = 'none';
+            
+            // Update placeholder and label based on search type
+            const searchInput = document.getElementById('searchTerm');
+            switch (searchType) {
+                case 'frequency':
+                    searchLabel.textContent = 'Frequency (MHz)';
+                    searchInput.placeholder = 'e.g. 146.520';
+                    break;
+                case 'city':
+                    searchLabel.textContent = 'City Name';
+                    searchInput.placeholder = 'e.g. Little Rock';
+                    break;
+                case 'callsign':
+                    searchLabel.textContent = 'Callsign';
+                    searchInput.placeholder = 'e.g. K5ABC';
+                    break;
+            }
+        }
+    }
+
+    searchTypeSelect.addEventListener('change', updateSearchForm);
+    
+    // Initialize form state
+    updateSearchForm();
+});
+</script>

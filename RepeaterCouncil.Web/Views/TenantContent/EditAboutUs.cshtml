@@ -1,0 +1,111 @@
+@model RepeaterCouncil.Web.Models.Tenant
+@{
+    ViewData["Title"] = "Edit About Us Content";
+}
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col">
+            <h2>Edit About Us Content</h2>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li class="breadcrumb-item"><a asp-action="Index">Content Management</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Edit About Us</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <form asp-action="EditAboutUs">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="Name" />
+        <input type="hidden" asp-for="Url" />
+
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-edit me-2"></i>About Us Page Content
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label asp-for="AboutUsContent" class="form-label">Content</label>
+                    <textarea asp-for="AboutUsContent" class="form-control" id="aboutUsEditor" name="AboutUsContent"
+                        rows="15">@Model.AboutUsContent</textarea>
+                    <span asp-validation-for="AboutUsContent" class="text-danger"></span>
+                    <div class="form-text">
+                        Use the editor above to format your About Us content. You can add links, images, and formatting
+                        as needed.
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-save me-2"></i>Save Changes
+                </button>
+                <a asp-action="Index" class="btn btn-secondary ms-2">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </a>
+                <a asp-controller="Home" asp-action="About" class="btn btn-outline-info ms-2" target="_blank">
+                    <i class="fas fa-eye me-2"></i>Preview Page
+                </a>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <!-- TinyMCE CDN -->
+    <script src="https://cdn.tiny.cloud/1/2bkkhg8euqblwujucuv1t8d3d3sxhoj4obbp7a0361mb301c/tinymce/7/tinymce.min.js"
+        referrerpolicy="origin"></script>
+
+    <script>
+        tinymce.init({
+            selector: '#aboutUsEditor',
+            height: 400,
+            menubar: true,
+            plugins: [
+                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                'insertdatetime', 'media', 'table', 'help', 'wordcount'
+            ],
+            toolbar: 'undo redo | blocks | ' +
+                'bold italic backcolor | alignleft aligncenter ' +
+                'alignright alignjustify | bullist numlist outdent indent | ' +
+                'removeformat | link image | help',
+            content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif; font-size: 14px; }',
+            branding: false,
+            promotion: false,
+            link_default_target: '_blank',
+            link_assume_external_targets: true,
+            image_title: true,
+            automatic_uploads: false,
+            file_picker_types: 'image',
+            setup: function (editor) {
+                editor.on('change', function () {
+                    editor.save();
+                });
+            }
+        });
+
+        // Ensure TinyMCE content is saved before form submission
+        document.querySelector('form').addEventListener('submit', function () {
+            tinymce.triggerSave();
+        });
+    </script>
+}
